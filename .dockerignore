@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+data
+*.sqlite
+*.sqlite-*
+.env*
+.~*
+AGENTS.md
+CLAUDE.md
+tsconfig.tsbuildinfo
+README.md
