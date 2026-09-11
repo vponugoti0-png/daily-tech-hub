@@ -19,13 +19,20 @@ export function getDb() {
   return _db;
 }
 
+function columnNames(db: Database.Database, table: string): Set<string> {
+  const rows = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  return new Set(rows.map((r) => r.name));
+}
+
 function migrate(db: Database.Database) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE COLLATE NOCASE,
       name TEXT NOT NULL,
-      password_hash TEXT NOT NULL,
+      password_hash TEXT,
+      oauth_provider TEXT,
+      oauth_subject TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -41,6 +48,46 @@ function migrate(db: Database.Database) {
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       UNIQUE(user_id, track, slug)
     );
+  `);
+
+  const cols = columnNames(db, "users");
+  if (!cols.has("oauth_provider")) {
+    db.exec("ALTER TABLE users ADD COLUMN oauth_provider TEXT");
+  }
+  if (!cols.has("oauth_subject")) {
+    db.exec("ALTER TABLE users ADD COLUMN oauth_subject TEXT");
+  }
+
+  // Rebuild if password_hash is still NOT NULL (older schema) so OAuth-only rows can omit it.
+  const info = db.prepare("PRAGMA table_info(users)").all() as {
+    name: string;
+    notnull: number;
+  }[];
+  const pw = info.find((c) => c.name === "password_hash");
+  if (pw && pw.notnull === 1) {
+    db.exec(`
+      BEGIN;
+      CREATE TABLE users_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+        name TEXT NOT NULL,
+        password_hash TEXT,
+        oauth_provider TEXT,
+        oauth_subject TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      INSERT INTO users_new (id, email, name, password_hash, oauth_provider, oauth_subject, created_at)
+      SELECT id, email, name, password_hash, oauth_provider, oauth_subject, created_at FROM users;
+      DROP TABLE users;
+      ALTER TABLE users_new RENAME TO users;
+      COMMIT;
+    `);
+  }
+
+  db.exec(`
+    CREATE UNIQUE INDEX IF NOT EXISTS users_oauth_unique
+      ON users(oauth_provider, oauth_subject)
+      WHERE oauth_provider IS NOT NULL AND oauth_subject IS NOT NULL;
   `);
 }
 
@@ -75,7 +122,9 @@ export type UserRow = {
   id: number;
   email: string;
   name: string;
-  password_hash: string;
+  password_hash: string | null;
+  oauth_provider: string | null;
+  oauth_subject: string | null;
   created_at: string;
 };
 

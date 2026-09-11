@@ -25,7 +25,7 @@ export async function createSessionToken(user: SessionUser) {
     .sign(secret());
 }
 
-export async function readSession(): Promise<SessionUser | null> {
+async function readCookieSession(): Promise<SessionUser | null> {
   const jar = await cookies();
   const token = jar.get(COOKIE)?.value;
   if (!token) return null;
@@ -36,6 +36,26 @@ export async function readSession(): Promise<SessionUser | null> {
       return null;
     }
     return { id, email: payload.email, name: payload.name };
+  } catch {
+    return null;
+  }
+}
+
+/** Prefer email/password JWT cookie; fall back to Auth.js (OAuth) session. */
+export async function readSession(): Promise<SessionUser | null> {
+  const cookieSession = await readCookieSession();
+  if (cookieSession) return cookieSession;
+
+  try {
+    const { auth } = await import("@/auth");
+    const session = await auth();
+    const id = Number(session?.user?.id);
+    if (!id || !session?.user?.email || !session.user.name) return null;
+    return {
+      id,
+      email: session.user.email,
+      name: session.user.name,
+    };
   } catch {
     return null;
   }

@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { getDb, type ProgressRow, type UserRow } from "@/lib/db";
 
 export function findUserByEmail(email: string): UserRow | undefined {
@@ -13,6 +14,17 @@ export function findUserById(id: number): UserRow | undefined {
     | undefined;
 }
 
+export function findUserByOAuth(
+  provider: string,
+  subject: string,
+): UserRow | undefined {
+  return getDb()
+    .prepare(
+      "SELECT * FROM users WHERE oauth_provider = ? AND oauth_subject = ?",
+    )
+    .get(provider, subject) as UserRow | undefined;
+}
+
 export function createUser(email: string, name: string, password: string) {
   const hash = bcrypt.hashSync(password, 10);
   const info = getDb()
@@ -21,8 +33,73 @@ export function createUser(email: string, name: string, password: string) {
   return findUserById(Number(info.lastInsertRowid))!;
 }
 
+/** Random bcrypt hash that no password can match — for OAuth-only accounts. */
+export function unusablePasswordHash() {
+  return bcrypt.hashSync(`oauth-unusable:${crypto.randomBytes(32).toString("hex")}`, 10);
+}
+
+/**
+ * Upsert an OAuth identity into SQLite users.
+ * Link order: (1) provider+subject, (2) email when present, (3) create new.
+ */
+export function upsertOAuthUser(input: {
+  provider: string;
+  subject: string;
+  email?: string | null;
+  name?: string | null;
+}): UserRow {
+  const provider = input.provider.trim();
+  const subject = input.subject.trim();
+  const emailRaw = (input.email || "").trim().toLowerCase();
+  const name = (input.name || "").trim() || emailRaw.split("@")[0] || `${provider} user`;
+
+  const byOAuth = findUserByOAuth(provider, subject);
+  if (byOAuth) {
+    if (name && name !== byOAuth.name) {
+      getDb().prepare("UPDATE users SET name = ? WHERE id = ?").run(name, byOAuth.id);
+      return findUserById(byOAuth.id)!;
+    }
+    return byOAuth;
+  }
+
+  if (emailRaw && emailRaw.includes("@")) {
+    const byEmail = findUserByEmail(emailRaw);
+    if (byEmail) {
+      getDb()
+        .prepare(
+          "UPDATE users SET oauth_provider = ?, oauth_subject = ?, name = COALESCE(NULLIF(?, ''), name) WHERE id = ?",
+        )
+        .run(provider, subject, name, byEmail.id);
+      return findUserById(byEmail.id)!;
+    }
+
+    const info = getDb()
+      .prepare(
+        `INSERT INTO users (email, name, password_hash, oauth_provider, oauth_subject)
+         VALUES (?, ?, ?, ?, ?)`,
+      )
+      .run(emailRaw, name, unusablePasswordHash(), provider, subject);
+    return findUserById(Number(info.lastInsertRowid))!;
+  }
+
+  // No email from provider (common for X/Twitter without elevated email scope).
+  const synthetic = `${provider}_${subject.replace(/[^a-zA-Z0-9_-]/g, "")}@oauth.local`;
+  const info = getDb()
+    .prepare(
+      `INSERT INTO users (email, name, password_hash, oauth_provider, oauth_subject)
+       VALUES (?, ?, ?, ?, ?)`,
+    )
+    .run(synthetic, name, unusablePasswordHash(), provider, subject);
+  return findUserById(Number(info.lastInsertRowid))!;
+}
+
 export function verifyPassword(user: UserRow, password: string) {
-  return bcrypt.compareSync(password, user.password_hash);
+  if (!user.password_hash) return false;
+  try {
+    return bcrypt.compareSync(password, user.password_hash);
+  } catch {
+    return false;
+  }
 }
 
 export function getProgressForUser(userId: number): ProgressRow[] {

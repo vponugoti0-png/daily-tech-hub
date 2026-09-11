@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { pushLocalProgressToServer } from "@/lib/progress";
 
 export default function SignupPage() {
@@ -50,48 +51,57 @@ export default function SignupPage() {
           Create account
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          No credit card. No paywalls. Sync training progress across devices on this install.
+          No credit card. No paywalls. Sync training progress across devices on this install —
+          email or Google / Microsoft / X.
         </p>
       </div>
-      <form onSubmit={onSubmit} className="panel space-y-4 rounded-2xl p-6">
-        <label className="block text-sm">
-          <span className="mb-1.5 block text-[var(--muted)]">Name</span>
-          <input
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="field"
-            autoComplete="name"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1.5 block text-[var(--muted)]">Email</span>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="field"
-            autoComplete="email"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1.5 block text-[var(--muted)]">Password (min 6)</span>
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="field"
-            autoComplete="new-password"
-          />
-        </label>
-        {error ? <p className="text-sm text-[var(--punch)]">{error}</p> : null}
-        <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-50">
-          {busy ? "Creating…" : "Sign up free"}
-        </button>
-      </form>
+
+      <div className="panel space-y-4 rounded-2xl p-6">
+        <OAuthButtons />
+        <div className="relative py-1 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+          <span className="relative z-10 bg-[var(--panel)] px-3">or email</span>
+          <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--ink-border)]" />
+        </div>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <label className="block text-sm">
+            <span className="mb-1.5 block text-[var(--muted)]">Name</span>
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="field"
+              autoComplete="name"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1.5 block text-[var(--muted)]">Email</span>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="field"
+              autoComplete="email"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1.5 block text-[var(--muted)]">Password (min 6)</span>
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="field"
+              autoComplete="new-password"
+            />
+          </label>
+          {error ? <p className="text-sm text-[var(--punch)]">{error}</p> : null}
+          <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-50">
+            {busy ? "Creating…" : "Sign up free"}
+          </button>
+        </form>
+      </div>
       <p className="text-sm text-[var(--muted)]">
         Already have an account?{" "}
         <Link href="/login" className="text-[var(--signal)] underline-offset-2 hover:underline">

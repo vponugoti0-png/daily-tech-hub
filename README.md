@@ -42,7 +42,7 @@ npm run seed:demo   # prints credentials
 | News | `/news` | Headline, source, summary, why it matters |
 | Training | `/training`… | Python · SQL · Databricks · Snowflake · Git · **Prompt Engineering** · **AI for DE** |
 | Progress | `/dashboard` | Cert-style track % (local + synced when logged in) |
-| Auth | `/login`, `/signup` | Free email + password (JWT httpOnly cookie) |
+| Auth | `/login`, `/signup` | Free email/password + Google / Microsoft / X (Auth.js) |
 | Releases | `/releases` | What changed + why read now |
 | Shortcuts | `/shortcuts` | Filterable packs + **favorites / recents** |
 | Search | `/search?q=` | Cross-content search |
@@ -67,10 +67,44 @@ Lessons include objectives, try-it shells (sandbox later), quizzes, outlines (mo
 
 ## Auth & progress
 
+**100% free.** Email/password and OAuth (Google, Microsoft Entra ID, X/Twitter) all map into the same SQLite `users` + `lesson_progress` tables.
+
 - SQLite DB: `data/dth.sqlite` (gitignored)
-- APIs: `POST /api/auth/signup|login|logout`, `GET /api/auth/me`, `GET|POST /api/progress`
-- Session: httpOnly JWT cookie (`AUTH_SECRET` env optional for production)
+- Email/password APIs: `POST /api/auth/signup|login|logout`, `GET /api/auth/me`, `GET|POST /api/progress`
+- OAuth: Auth.js / NextAuth v5 at `/api/auth/*` (App Router)
+- Sessions: email/password uses httpOnly JWT cookie `dth_session`; OAuth uses Auth.js JWT. `GET /api/auth/me` accepts either.
 - Guest progress stays in `localStorage` (`dth-progress-v3`); login merges/syncs
+- OAuth users are upserted into `users` (link by email when the provider returns one; otherwise a synthetic `@oauth.local` email). `password_hash` is nullable / unusable for OAuth-only accounts. Columns: `oauth_provider`, `oauth_subject`.
+
+### OAuth env vars
+
+Copy `.env.example` → `.env.local` (never commit secrets):
+
+| Variable | Purpose |
+|----------|---------|
+| `AUTH_SECRET` | Shared secret for Auth.js + email JWT (required in production) |
+| `AUTH_URL` / `NEXTAUTH_URL` | App origin, e.g. `http://localhost:3000` |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google OAuth client |
+| `AUTH_MICROSOFT_ENTRA_ID_ID` / `AUTH_MICROSOFT_ENTRA_ID_SECRET` / `AUTH_MICROSOFT_ENTRA_ID_ISSUER` | Entra ID (Azure AD) app |
+| `AUTH_TWITTER_ID` / `AUTH_TWITTER_SECRET` | X OAuth 2.0 client |
+
+If a provider’s credentials are missing, the login/signup buttons still render with a **setup** badge and explain how to configure env — the app does **not** crash.
+
+### Callback URLs (register in each provider console)
+
+Local development:
+
+- Google: `http://localhost:3000/api/auth/callback/google`
+- Microsoft Entra ID: `http://localhost:3000/api/auth/callback/microsoft-entra-id`
+- X (Twitter): `http://localhost:3000/api/auth/callback/twitter`
+
+Production: same paths on your public origin (`https://YOUR_DOMAIN/api/auth/callback/...`).
+
+### Create provider apps (follow-up for you)
+
+1. **Google** — [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → OAuth client (Web) → add the Google callback URL → copy Client ID/Secret into `AUTH_GOOGLE_*`.
+2. **Microsoft** — [Entra admin center](https://entra.microsoft.com/) → App registrations → New → Web redirect URI = Microsoft callback → Certificates & secrets → set `AUTH_MICROSOFT_ENTRA_ID_*` and issuer `https://login.microsoftonline.com/<tenant-id>/v2.0` (or `/common/v2.0`).
+3. **X** — [X Developer Portal](https://developer.x.com/) → Project/App → OAuth 2.0 client ID & secret → User authentication settings → callback = Twitter callback above → set `AUTH_TWITTER_*`. Email may require elevated X API access; without email we still create a unique user row.
 
 ## Content layout
 
@@ -96,7 +130,7 @@ npm run refresh:daily -- --rotate
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS v4 · Framer Motion · lucide-react
 - `@react-three/fiber` + `@react-three/drei` + `three`
-- `better-sqlite3` · `bcryptjs` · `jose`
+- `better-sqlite3` · `bcryptjs` · `jose` · `next-auth` (Auth.js v5)
 - `gray-matter` + `remark` for Markdown lessons
 
 ## Remote
