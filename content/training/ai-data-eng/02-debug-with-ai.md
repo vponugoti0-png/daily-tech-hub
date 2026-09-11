@@ -5,7 +5,7 @@ title: "Debug pipelines with AI"
 description: "Share symptoms safely and get structured debugging help."
 level: "beginner"
 order: 2
-durationMinutes: 30
+durationMinutes: 8
 topics: [general, python, sql]
 objectives: [Describe failures with expected vs actual, Ask for hypotheses ranked by likelihood, Turn suggestions into concrete checks]
 updatedAt: "2026-09-11"

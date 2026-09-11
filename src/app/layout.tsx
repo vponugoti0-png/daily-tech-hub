@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem('dth-theme')==='light')document.documentElement.classList.add('light');if(localStorage.getItem('dth-plain-english')==='1')document.documentElement.dataset.plainEnglish='on'}catch(e){}})();`,
+            __html: `(function(){try{var th=localStorage.getItem('dth-theme');if(th==='dark'){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark');document.documentElement.classList.remove('light')}if(localStorage.getItem('dth-plain-english')==='1')document.documentElement.dataset.plainEnglish='on'}catch(e){}})();`,
           }}
         />
       </head>

@@ -5,7 +5,7 @@ title: "Review AI-assisted changes"
 description: "Checklist for PRs and notebooks that include AI-generated edits."
 level: "beginner"
 order: 6
-durationMinutes: 25
+durationMinutes: 8
 topics: [git, general]
 objectives: [Apply a practical review checklist, Call out risks in comments, Keep humans accountable for merges]
 updatedAt: "2026-09-11"

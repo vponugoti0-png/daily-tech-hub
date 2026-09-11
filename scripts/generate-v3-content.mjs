@@ -829,7 +829,7 @@ const packs = [
     updatedAt: UPDATED,
     sources: [
       { label: "GitHub Copilot docs", url: "https://docs.github.com/en/copilot" },
-      { label: "Copilot keyboard shortcuts (VS Code)", url: "https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-your-ide" },
+      { label: "Copilot keyboard shortcuts (VS Code)", url: "https://docs.github.com/en/copilot/how-tos/configure-personal-settings/configure-in-ide" },
     ],
     tips: [
       { group: "keyboard", title: "Accept suggestion", body: "Accept the current inline completion (VS Code).", code: "Tab", source: "VS Code Copilot" },

@@ -5,7 +5,7 @@ title: "Generate SQL & Python safely"
 description: "Prompt for dialect-aware code and review it like a PR."
 level: "beginner"
 order: 3
-durationMinutes: 30
+durationMinutes: 8
 topics: [sql, python]
 objectives: [Specify dialect, warehouse, and interfaces, Require comments on assumptions, Review AI code with tests and dry-runs]
 updatedAt: "2026-09-11"

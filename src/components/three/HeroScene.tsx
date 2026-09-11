@@ -71,13 +71,13 @@ function TableMotif() {
         {[-0.35, 0, 0.35].map((z, i) => (
           <mesh key={`row-${i}`} position={[0, 0.05, z]}>
             <boxGeometry args={[1.45, 0.02, 0.03]} />
-            <meshStandardMaterial color="#0b1020" transparent opacity={0.45} />
+            <meshStandardMaterial color="#2a2150" transparent opacity={0.45} />
           </mesh>
         ))}
         {[-0.45, 0, 0.45].map((x, i) => (
           <mesh key={`col-${i}`} position={[x, 0.05, 0]}>
             <boxGeometry args={[0.03, 0.02, 0.9]} />
-            <meshStandardMaterial color="#0b1020" transparent opacity={0.45} />
+            <meshStandardMaterial color="#2a2150" transparent opacity={0.45} />
           </mesh>
         ))}
         {(

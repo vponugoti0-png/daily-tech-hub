@@ -9,15 +9,26 @@ import {
   useRef,
   useState,
 } from "react";
-import { mergeServerProgress, pushLocalProgressToServer } from "@/lib/progress";
+import {
+  clearLocalProgress,
+  mergeServerProgress,
+  pushLocalProgressToServer,
+  replaceLocalProgress,
+} from "@/lib/progress";
 import { authedFetch } from "@/lib/auth/client";
+import { signOut as nextAuthSignOut } from "next-auth/react";
 
 export type AuthUser = { id: number; email: string; name: string };
+
+type RefreshOpts = {
+  /** When false, never upload guest localStorage onto the account (signup). Default true. */
+  uploadLocal?: boolean;
+};
 
 type AuthCtx = {
   user: AuthUser | null;
   loading: boolean;
-  refresh: () => Promise<void>;
+  refresh: (opts?: RefreshOpts) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -33,7 +44,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const epoch = useRef(0);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (opts?: RefreshOpts) => {
+    const uploadLocal = opts?.uploadLocal !== false;
     const myEpoch = ++epoch.current;
     setLoading(true);
     try {
@@ -53,21 +65,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (myEpoch !== epoch.current) return;
       setUser(data.user);
       if (data.user) {
-        await pushLocalProgressToServer();
-        if (myEpoch !== epoch.current) return;
-        if (data.progress?.length) {
-          const map = Object.fromEntries(
-            data.progress.map((p) => [
-              `${p.track}:${p.slug}`,
-              {
-                completed: p.completed,
-                quizScore: p.quizScore,
-                quizTotal: p.quizTotal,
-                stepIndex: p.stepIndex,
-                updatedAt: p.updatedAt,
-              },
-            ]),
-          );
+        if (uploadLocal) {
+          await pushLocalProgressToServer();
+          if (myEpoch !== epoch.current) return;
+        }
+
+        const map = Object.fromEntries(
+          (data.progress ?? []).map((p) => [
+            `${p.track}:${p.slug}`,
+            {
+              completed: p.completed,
+              quizScore: p.quizScore,
+              quizTotal: p.quizTotal,
+              stepIndex: p.stepIndex,
+              updatedAt: p.updatedAt,
+            },
+          ]),
+        );
+
+        if (!uploadLocal) {
+          // Fresh signup: trust server only (usually empty). Drop guest leftovers.
+          replaceLocalProgress(map);
+        } else if (Object.keys(map).length) {
           mergeServerProgress(map);
         }
         window.dispatchEvent(new Event("dth-progress"));
@@ -81,14 +100,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    // Invalidate any in-flight refresh so it cannot resurrect the session UI.
     epoch.current += 1;
     setUser(null);
     setLoading(false);
+    clearLocalProgress();
     try {
       await authedFetch("/api/auth/logout", { method: "POST" });
     } catch {
       /* client already cleared */
+    }
+    try {
+      await nextAuthSignOut({ redirect: false });
+    } catch {
+      /* no Auth.js session */
     }
   }, []);
 

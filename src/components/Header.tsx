@@ -24,6 +24,9 @@ export function Header() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { user, logout, loading } = useAuth();
+  const onAuthPage = pathname === "/login" || pathname === "/signup";
+  const account = user;
+  const showAccount = Boolean(account) && !onAuthPage;
 
   async function handleLogout() {
     setOpen(false);
@@ -87,14 +90,14 @@ export function Header() {
             <Search className="h-4 w-4" aria-hidden />
             <span className="hidden md:inline">Search</span>
           </Link>
-          {user ? (
+          {showAccount ? (
             <div className="hidden items-center gap-1.5 sm:flex">
               <Link
                 href="/dashboard"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] border border-[var(--mint)]/40 bg-[var(--mint)]/15 px-3 py-2 text-sm font-bold text-[var(--mint)]"
               >
                 <UserRound className="h-4 w-4" aria-hidden />
-                <span className="max-w-[7rem] truncate">{user.name || user.email?.split("@")[0] || "Account"}</span>
+                <span className="max-w-[7rem] truncate">{account && account.name && !/^demo\s*oauth$/i.test(account.name) ? account.name : account?.email && !account.email.endsWith("@oauth.local") ? account.email.split("@")[0] : "You"}</span>
               </Link>
               <button
                 type="button"
@@ -142,7 +145,7 @@ export function Header() {
             <div className="px-1 py-2">
               <PlainEnglishToggle />
             </div>
-            {user ? (
+            {showAccount ? (
               <>
                 <Link
                   href="/dashboard"

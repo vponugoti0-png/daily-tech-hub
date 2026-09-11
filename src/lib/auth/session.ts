@@ -164,9 +164,19 @@ export async function setSessionCookie(token: string) {
 
 export async function clearSessionCookie() {
   const jar = await cookies();
-  jar.delete(COOKIE);
-  jar.delete(ACCESS_COOKIE);
-  jar.delete(REFRESH_COOKIE);
+  // Next.js jar.delete() often fails to clear httpOnly cookies across hosts;
+  // expire explicitly with the same path/sameSite attributes used when setting.
+  const expired = {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  };
+  for (const name of [COOKIE, ACCESS_COOKIE, REFRESH_COOKIE]) {
+    jar.set(name, "", expired);
+    jar.delete(name);
+  }
 }
 
 export { ACCESS_TTL, REFRESH_TTL };

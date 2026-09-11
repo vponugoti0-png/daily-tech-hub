@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 import type { OAuthProviderId } from "@/lib/auth/oauth-providers";
 
@@ -10,42 +10,29 @@ const LABELS: Record<OAuthProviderId, string> = {
   twitter: "Continue with X",
 };
 
-const ALL: OAuthProviderId[] = ["google", "microsoft-entra-id", "twitter"];
-
-export function OAuthButtons({ callbackUrl = "/dashboard" }: { callbackUrl?: string }) {
-  const [configured, setConfigured] = useState<OAuthProviderId[] | null>(null);
+export function OAuthButtons({
+  callbackUrl = "/dashboard",
+  initialConfigured = [],
+}: {
+  callbackUrl?: string;
+  /** Server-provided list — avoids “Checking social login…” flash */
+  initialConfigured?: OAuthProviderId[];
+}) {
+  const configured = initialConfigured;
   const [busy, setBusy] = useState<OAuthProviderId | null>(null);
   const [hint, setHint] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/auth/providers")
-      .then((r) => r.json())
-      .then((data: { configured?: OAuthProviderId[] }) => {
-        if (!cancelled) setConfigured(data.configured ?? []);
-      })
-      .catch(() => {
-        if (!cancelled) setConfigured([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  if (configured.length === 0) {
+    return null;
+  }
 
   async function onClick(id: OAuthProviderId) {
     setHint("");
-    const ready = configured?.includes(id);
-    if (!ready) {
-      setHint(
-        "OAuth is not configured yet. Add provider env vars (see README / .env.example) and restart the server.",
-      );
-      return;
-    }
     setBusy(id);
     try {
       await signIn(id, { callbackUrl });
     } catch {
-      setHint("Could not start OAuth sign-in. Check server logs and env configuration.");
+      setHint("Could not start Google sign-in. Try email instead, or refresh the page.");
       setBusy(null);
     }
   }
@@ -53,46 +40,23 @@ export function OAuthButtons({ callbackUrl = "/dashboard" }: { callbackUrl?: str
   return (
     <div className="space-y-3">
       <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-        100% free · social sign-in
+        Free account · one-tap sign-in
       </p>
       <div className="grid gap-2">
-        {ALL.map((id) => {
-          const ready = configured?.includes(id) ?? false;
-          return (
-            <button
-              key={id}
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void onClick(id)}
-              className="btn-ghost flex w-full items-center justify-center gap-2 disabled:opacity-50"
-              title={
-                configured === null
-                  ? "Checking configuration…"
-                  : ready
-                    ? LABELS[id]
-                    : "Configure env vars to enable (see README)"
-              }
-            >
-              <OAuthIcon id={id} />
-              {busy === id ? "Redirecting…" : LABELS[id]}
-              {configured !== null && !ready ? (
-                <span className="ml-1 rounded bg-[var(--panel-2)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">
-                  setup
-                </span>
-              ) : null}
-            </button>
-          );
-        })}
+        {configured.map((id) => (
+          <button
+            key={id}
+            type="button"
+            disabled={busy !== null}
+            onClick={() => void onClick(id)}
+            className="btn-ghost flex w-full items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <OAuthIcon id={id} />
+            {busy === id ? "Opening Google…" : LABELS[id]}
+          </button>
+        ))}
       </div>
       {hint ? <p className="text-sm text-[var(--punch)]">{hint}</p> : null}
-      {configured !== null && configured.length === 0 ? (
-        <p className="text-xs text-[var(--muted)]">
-          Buttons work after you set{" "}
-          <code className="font-mono text-[11px]">AUTH_GOOGLE_*</code>,{" "}
-          <code className="font-mono text-[11px]">AUTH_MICROSOFT_ENTRA_ID_*</code>, or{" "}
-          <code className="font-mono text-[11px]">AUTH_TWITTER_*</code> — see README.
-        </p>
-      ) : null}
     </div>
   );
 }

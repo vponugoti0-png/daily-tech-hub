@@ -5,7 +5,7 @@ title: "AI as a data-engineering copilot"
 description: "Where AI helps DEs (and where it must not replace judgment)."
 level: "beginner"
 order: 1
-durationMinutes: 25
+durationMinutes: 8
 topics: [general, python]
 objectives: [Map AI to drafting, explaining, and reviewing — not silent prod changes, Choose tasks that are high-leverage for beginners, Keep ownership of correctness]
 updatedAt: "2026-09-11"

@@ -53,6 +53,21 @@ export function saveProgress(state: ProgressState) {
   localStorage.setItem(KEY, JSON.stringify(state));
 }
 
+/** Wipe guest/local progress — use on fresh signup so a new account starts at 0%. */
+export function clearLocalProgress() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(KEY);
+  localStorage.removeItem(LEGACY_KEY);
+}
+
+/** Overwrite local progress with server state (no guest merge). */
+export function replaceLocalProgress(serverLessons: Record<string, LessonProgress>) {
+  if (typeof window === "undefined") return { lessons: serverLessons };
+  const next: ProgressState = { lessons: { ...serverLessons } };
+  saveProgress(next);
+  return next;
+}
+
 export function getLessonProgress(track: string, slug: string): LessonProgress | undefined {
   return loadProgress().lessons[lessonKey(track, slug)];
 }

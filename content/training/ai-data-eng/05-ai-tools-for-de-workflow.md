@@ -5,7 +5,7 @@ title: "AI tools in the DE workflow"
 description: "Claude, Copilot, Grok, and warehouse assistants — when to use which."
 level: "beginner"
 order: 5
-durationMinutes: 25
+durationMinutes: 8
 topics: [general]
 objectives: [Match tools to chat vs in-editor vs in-warehouse tasks, Use Shortcuts packs for commands and features, Stay policy-compliant at work]
 updatedAt: "2026-09-11"

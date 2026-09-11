@@ -5,7 +5,7 @@ title: "Docs and tests with AI"
 description: "Turn working code into README notes and starter tests."
 level: "beginner"
 order: 4
-durationMinutes: 25
+durationMinutes: 8
 topics: [python, git]
 objectives: [Generate docs from real code you paste (sanitized), Ask for edge-case tests, Keep docs short and accurate]
 updatedAt: "2026-09-11"

@@ -4,20 +4,23 @@ import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [light, setLight] = useState(false);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("dth-theme");
-    const preferLight = stored === "light";
-    setLight(preferLight);
-    document.documentElement.classList.toggle("light", preferLight);
+    // Default light (easy on eyes). Only go dark if user chose it.
+    const preferDark = stored === "dark";
+    setDark(preferDark);
+    document.documentElement.classList.toggle("dark", preferDark);
+    document.documentElement.classList.remove("light");
   }, []);
 
   function toggle() {
-    const next = !light;
-    setLight(next);
-    document.documentElement.classList.toggle("light", next);
-    localStorage.setItem("dth-theme", next ? "light" : "dark");
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    document.documentElement.classList.remove("light");
+    localStorage.setItem("dth-theme", next ? "dark" : "light");
   }
 
   return (
@@ -25,9 +28,9 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       className="rounded-lg border border-[var(--ink-border)] bg-[var(--panel)] p-2 text-[var(--ink-fg)] transition hover:bg-[var(--panel-2)]"
-      aria-label={light ? "Switch to dark mode" : "Switch to light mode"}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {light ? <Moon className="h-4 w-4" aria-hidden /> : <Sun className="h-4 w-4" aria-hidden />}
+      {dark ? <Sun className="h-4 w-4" aria-hidden /> : <Moon className="h-4 w-4" aria-hidden />}
     </button>
   );
 }

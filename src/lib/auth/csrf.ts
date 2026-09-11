@@ -4,16 +4,42 @@ import { cookies } from "next/headers";
 export const CSRF_COOKIE = "dth_csrf";
 export const CSRF_HEADER = "x-csrf-token";
 
-function expectedOrigin(): string | null {
-  const raw =
-    process.env.AUTH_URL ||
-    process.env.NEXTAUTH_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null);
-  if (!raw) return null;
+/** Origins allowed to call mutating auth APIs (localhost + public preview). */
+function trustedOrigins(): Set<string> {
+  const out = new Set<string>();
+  const raw = process.env.AUTH_TRUSTED_ORIGINS || "";
+  for (const part of raw.split(",")) {
+    const s = part.trim();
+    if (!s) continue;
+    try {
+      out.add(new URL(s).origin);
+    } catch {
+      /* skip bad entry */
+    }
+  }
+  // Always include AUTH_URL / NEXTAUTH_URL if set
+  for (const key of ["AUTH_URL", "NEXTAUTH_URL"] as const) {
+    const v = process.env[key];
+    if (!v) continue;
+    try {
+      out.add(new URL(v).origin);
+    } catch {
+      /* skip */
+    }
+  }
+  // Dev fallback when nothing configured
+  if (out.size === 0 && process.env.NODE_ENV !== "production") {
+    out.add("http://localhost:3000");
+    out.add("http://127.0.0.1:3000");
+  }
+  return out;
+}
+
+function isTrustedOrigin(origin: string): boolean {
   try {
-    return new URL(raw).origin;
+    return trustedOrigins().has(new URL(origin).origin);
   } catch {
-    return null;
+    return false;
   }
 }
 
@@ -35,36 +61,22 @@ export async function ensureCsrfCookie(): Promise<string> {
 
 /**
  * Validate Origin/Referer (when available) + double-submit CSRF header.
- * Safe no-op for same-origin browsers that omit Origin on same-site navigations
- * when CSRF header matches cookie.
+ * Accepts any origin listed in AUTH_TRUSTED_ORIGINS (and AUTH_URL if set).
  */
 export async function assertCsrf(req: Request): Promise<
   { ok: true } | { ok: false; status: number; error: string }
 > {
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
-  const expected = expectedOrigin();
 
   if (origin) {
-    try {
-      const o = new URL(origin).origin;
-      if (expected && o !== expected) {
-        return { ok: false, status: 403, error: "Forbidden" };
-      }
-      // Dev without AUTH_URL: allow localhost only
-      if (!expected) {
-        const host = new URL(origin).hostname;
-        if (host !== "localhost" && host !== "127.0.0.1") {
-          return { ok: false, status: 403, error: "Forbidden" };
-        }
-      }
-    } catch {
+    if (!isTrustedOrigin(origin)) {
       return { ok: false, status: 403, error: "Forbidden" };
     }
   } else if (referer) {
     try {
       const r = new URL(referer).origin;
-      if (expected && r !== expected) {
+      if (!isTrustedOrigin(r)) {
         return { ok: false, status: 403, error: "Forbidden" };
       }
     } catch {
