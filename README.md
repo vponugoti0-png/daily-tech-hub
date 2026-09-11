@@ -34,6 +34,8 @@ npm run test:e2e:ui
 
 Coverage: native search GET form, homepage relative-time hydration, quiz submit gating, login/signup labels + failed-login `role=alert`. OAuth is skipped.
 
+Without JavaScript, `/search` stays on the App Router Suspense fallback (`Loading search…`). The no-JS smoke still asserts `method` / `action` / `name=q` and a native `form.submit()` to `/search?q=…`. Hydrated Enter covers the visible results UI.
+
 ## Demo users (free)
 
 Auto-seeded into `data/dth.sqlite` on first auth/progress API hit:

@@ -23,9 +23,12 @@ test.describe("auth form a11y", () => {
     await page.getByLabel("Password").fill("definitely-not-the-password");
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    const alert = page.getByRole("alert");
+    // Next.js also mounts an empty #__next-route-announcer__ with role=alert.
+    const alert = page.getByRole("alert").filter({ hasText: /./ });
     await expect(alert).toBeVisible();
-    await expect(alert).toHaveText(/invalid email or password|login failed|csrf|forbidden|network/i);
+    await expect(alert).toHaveText(
+      /invalid email or password|login failed|csrf|forbidden|network/i,
+    );
   });
 
   test("signup inputs have ids and associated labels", async ({ page }) => {
