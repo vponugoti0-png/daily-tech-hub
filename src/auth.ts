@@ -16,7 +16,8 @@ function buildProviders(): Provider[] {
       Google({
         clientId: process.env.AUTH_GOOGLE_ID!,
         clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-        checks: ["pkce", "state", "nonce"],
+        // Google often omits/mismatches id_token nonce in this Auth.js setup; pkce+state is enough.
+        checks: ["pkce", "state"],
       }),
     );
   }
