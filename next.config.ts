@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Daily Tech Hub */
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
 };
 
 export default nextConfig;

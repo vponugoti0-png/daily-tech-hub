@@ -1,6 +1,6 @@
 {
   "name": "daily-tech-hub",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,11 +8,16 @@
     "start": "next start",
     "lint": "eslint",
     "refresh:daily": "node scripts/refresh-daily.mjs",
-    "refresh-daily": "node scripts/refresh-daily.mjs"
+    "refresh-daily": "node scripts/refresh-daily.mjs",
+    "generate:courses": "node scripts/generate-courses.mjs",
+    "generate:shortcuts": "node scripts/generate-shortcuts.mjs"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
+    "framer-motion": "^13.2.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.45.0",
     "next": "16.3.4",
@@ -20,13 +25,15 @@
     "react-dom": "19.2.8",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.185.4",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",

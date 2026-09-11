@@ -1,64 +1,58 @@
 ---
 slug: python-testing-spark-logic
 track: python
-title: Testing business logic before Spark
-description: Extract pure Python rules so you can pytest them without a local SparkSession.
+title: "Testing Spark-bound logic in pure Python"
+description: "Extract business rules so you can unit test without a cluster, then pin Spark with tiny fixtures."
 level: intermediate
 order: 3
-durationMinutes: 30
+durationMinutes: 40
 topics: [python, pyspark]
 objectives:
-  - Separate pure rules from DataFrame I/O
-  - Use small fixture tables for regression tests
-  - Know when a Spark integration test is worth it
-updatedAt: "2026-09-06"
+  - "Separate pure rules from Spark I/O"
+  - "Use pytest fixtures for small DataFrames"
+  - "Assert on row sets, not printouts"
+updatedAt: "2026-09-11"
+quiz:
+  - question: "Best first test for a watermark policy?"
+    options:
+      - "Full Databricks job on prod"
+      - "Pure function over timestamps in pytest"
+      - "Only integration tests"
+      - "Manual notebook runs"
+    answer: 1
 ---
 
-# Testing business logic before Spark
+# Testing Spark-bound logic in pure Python
 
-Spinning Spark for every rule slows CI. Pull pure logic into functions; keep Spark for integration smoke tests.
+Clusters are slow feedback. Extract rules you can test in milliseconds.
 
-## Extract the rule
-
-```python
-def is_billable(event_type: str, amount: float) -> bool:
-    if event_type in {"test", "ping"}:
-        return False
-    return amount > 0
-```
-
-Then express it in Spark:
+## Pattern
 
 ```python
-from pyspark.sql import functions as F
+def is_late(event_ts, watermark_ts) -> bool:
+    return event_ts < watermark_ts
 
-def with_billable(df):
-    return df.withColumn(
-        "billable",
-        (~F.col("event_type").isin("test", "ping")) & (F.col("amount") > 0),
-    )
+# Spark wrapper stays thin
+def filter_late(df, watermark_col="watermark"):
+    return df.filter(~F.col("event_ts") < F.col(watermark_col))  # prefer UDF-free expr
 ```
 
-## pytest the pure function
+Prefer column expressions over Python UDFs for performance — test the **policy**, implement with Catalyst.
+
+## pytest shape
 
 ```python
-def test_is_billable():
-    assert is_billable("purchase", 10) is True
-    assert is_billable("ping", 10) is False
+def test_is_late():
+    assert is_late(1, 2) is True
+    assert is_late(3, 2) is False
 ```
+
+For Spark: use local session fixtures and assert `collect()` sets.
 
 ## Exercises
 
 ### Exercise 1
-Write pure `normalize_country(code: str) -> str` mapping `usa/US/United States` → `US`.
+Implement and test `business_date(ts, tz)` that floors to local calendar day.
 
 ### Exercise 2
-List two assertions you would still run in a SparkSession integration test (hint: nullability, join fanout).
-
-## Cheat sheet
-
-| Layer | Tool |
-|-------|------|
-| Pure rules | pytest |
-| DataFrame plan | Spark local smoke (optional) |
-| End-to-end | Dev warehouse / job cluster |
+Given duplicates, write a test that expects exactly one survivor per `event_id`.

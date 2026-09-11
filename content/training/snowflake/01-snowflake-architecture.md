@@ -1,0 +1,32 @@
+---
+slug: sf-architecture
+track: snowflake
+title: "Snowflake architecture for practitioners"
+description: "Storage/compute separation, warehouses, credits, and layered database design."
+level: beginner
+order: 1
+durationMinutes: 30
+topics: [snowflake]
+objectives:
+  - "Explain storage vs compute separation"
+  - "Size warehouses for workload types"
+  - "Organize databases/schemas for medallion-like layers"
+updatedAt: "2026-09-11"
+quiz:
+  - question: "Virtual warehouses primarily provide…"
+    options:
+      - "Permanent storage only"
+      - "Elastic compute billed by credits"
+      - "Git hosting"
+      - "DNS"
+    answer: 1
+---
+
+# Snowflake architecture for practitioners
+
+Independent **storage** and **virtual warehouses**. Suspend idle warehouses; separate ETL vs BI warehouses.
+
+## Exercises
+
+1. Propose warehouse sizes for nightly ETL vs daytime BI.
+2. Sketch DB/schema layout for raw/analytics/marts.

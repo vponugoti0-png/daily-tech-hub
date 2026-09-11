@@ -10,7 +10,11 @@ import type {
   Exercise,
   CheatSheetEntry,
   Topic,
+  QuizQuestion,
+  LessonStep,
+  TrackId,
 } from "./types";
+import { TRACK_IDS } from "./tracks";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
@@ -50,26 +54,30 @@ export function getShortcutBySlug(slug: string): ShortcutItem | undefined {
   return getAllShortcuts().find((s) => s.slug === slug);
 }
 
-function parseExercisesFromMarkdown(body: string): { content: string; exercises: Exercise[]; cheatSheet?: CheatSheetEntry[] } {
-  // Content is already authored with exercises inline; we keep full markdown as content.
-  // Optionally extract a simple cheat sheet table is skipped — full MD renders instead.
-  return { content: body.trim(), exercises: [] };
+function deriveSteps(content: string, hasQuiz: boolean): LessonStep[] {
+  const steps: LessonStep[] = [{ id: "learn", title: "Learn" }];
+  if (/## Exercises/i.test(content)) {
+    steps.push({ id: "exercises", title: "Exercises" });
+  }
+  if (hasQuiz) steps.push({ id: "quiz", title: "Check understanding" });
+  steps.push({ id: "complete", title: "Complete" });
+  return steps;
 }
 
 export function getAllLessons(): TrainingLesson[] {
-  const tracks = ["python", "sql", "git"] as const;
   const lessons: TrainingLesson[] = [];
 
-  for (const track of tracks) {
+  for (const track of TRACK_IDS) {
     const dir = path.join(CONTENT_ROOT, "training", track);
     if (!fs.existsSync(dir)) continue;
     for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
       const raw = fs.readFileSync(path.join(dir, file), "utf8");
       const { data, content } = matter(raw);
-      const parsed = parseExercisesFromMarkdown(content);
+      const quiz = (data.quiz as QuizQuestion[] | undefined) ?? undefined;
+      const body = content.trim();
       lessons.push({
         slug: String(data.slug),
-        track: data.track as TrainingLesson["track"],
+        track: data.track as TrackId,
         title: String(data.title),
         description: String(data.description),
         level: data.level as TrainingLesson["level"],
@@ -77,9 +85,11 @@ export function getAllLessons(): TrainingLesson[] {
         durationMinutes: Number(data.durationMinutes),
         topics: (data.topics || []) as Topic[],
         objectives: (data.objectives || []) as string[],
-        content: parsed.content,
-        exercises: parsed.exercises,
+        content: body,
+        exercises: (data.exercises as Exercise[] | undefined) ?? [],
         cheatSheet: (data.cheatSheet as CheatSheetEntry[] | undefined) ?? undefined,
+        quiz,
+        steps: (data.steps as LessonStep[] | undefined) ?? deriveSteps(body, Boolean(quiz?.length)),
         updatedAt: String(data.updatedAt),
       });
     }

@@ -54,8 +54,11 @@ export function searchContent(query: string): SearchResult[] {
   }
 
   for (const s of getAllShortcuts()) {
-    const tipText = s.tips.map((t) => `${t.title} ${t.body} ${t.code ?? ""}`).join(" ");
-    if (hay(s.title, s.summary, s.category, tipText, s.topics).includes(q)) {
+    const tipText = s.tips
+      .map((t) => `${t.title} ${t.body} ${t.code ?? ""} ${t.group ?? ""} ${t.source ?? ""}`)
+      .join(" ");
+    const sourceText = (s.sources ?? []).map((x) => x.label).join(" ");
+    if (hay(s.title, s.summary, s.category, s.tool, tipText, sourceText, s.topics).includes(q)) {
       results.push({
         kind: "shortcut",
         slug: s.slug,

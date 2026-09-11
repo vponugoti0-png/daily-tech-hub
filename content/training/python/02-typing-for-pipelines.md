@@ -1,74 +1,74 @@
 ---
 slug: python-typing-for-pipelines
 track: python
-title: Typing & configs for pipeline code
-description: Use dataclasses, TypedDict, and pydantic-ish patterns so job configs fail fast in CI.
-level: beginner
+title: "Typing for reliable pipelines"
+description: "TypedDicts, Protocols, and gradual typing that make ETL contracts enforceable in CI."
+level: intermediate
 order: 2
-durationMinutes: 20
+durationMinutes: 35
 topics: [python]
 objectives:
-  - Model job config with frozen dataclasses
-  - Type public function signatures
-  - Fail fast on invalid environment values
-updatedAt: "2026-09-08"
+  - "Model row contracts with TypedDict"
+  - "Use Protocols for duck-typed DataFrame APIs"
+  - "Catch schema drift in type-checked helpers"
+updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "TypedDict"
+    code: "class Event(TypedDict): event_id: str; ts: datetime"
+  - label: "Protocol"
+    code: "class FrameLike(Protocol): columns: Sequence[str]"
+quiz:
+  - question: "TypedDict is best used for…"
+    options:
+      - "Runtime Spark Catalyst plans"
+      - "Documenting and statically checking dict-shaped row contracts"
+      - "Replacing all DataFrames"
+      - "GPU kernels"
+    answer: 1
 ---
 
-# Typing & configs for pipeline code
+# Typing for reliable pipelines
 
-Untyped `dict` configs are how `warehouse=None` reaches production on Friday.
+Types won't stop bad data at the warehouse door, but they **shrink the blast radius** of API mistakes and make reviews faster.
 
-## Frozen config objects
-
-```python
-from dataclasses import dataclass
-
-@dataclass(frozen=True)
-class SnowflakeJobConfig:
-    account: str
-    warehouse: str
-    database: str
-    schema: str
-    role: str
-
-    @classmethod
-    def from_env(cls, env: dict[str, str]) -> "SnowflakeJobConfig":
-        missing = [k for k in ("SF_ACCOUNT", "SF_WAREHOUSE", "SF_DATABASE", "SF_SCHEMA", "SF_ROLE") if not env.get(k)]
-        if missing:
-            raise OSError(f"missing env: {missing}")
-        return cls(
-            account=env["SF_ACCOUNT"],
-            warehouse=env["SF_WAREHOUSE"],
-            database=env["SF_DATABASE"],
-            schema=env["SF_SCHEMA"],
-            role=env["SF_ROLE"],
-        )
-```
-
-## Annotate transforms
+## TypedDict row contracts
 
 ```python
-from typing import Protocol
+from typing import TypedDict
+from datetime import datetime
 
-class Frame(Protocol):
-    columns: list[str]
-
-def select_contract(df: Frame, cols: list[str]) -> Frame:
-    ...
+class RawEvent(TypedDict):
+    event_id: str
+    user_id: str
+    ts: datetime
+    payload: dict
 ```
+
+## Protocols for frame-like objects
+
+```python
+from typing import Protocol, Sequence
+
+class HasColumns(Protocol):
+    @property
+    def columns(self) -> Sequence[str]: ...
+
+def require(frame: HasColumns, cols: Sequence[str]) -> None:
+    missing = set(cols) - set(map(str, frame.columns))
+    if missing:
+        raise ValueError(sorted(missing))
+```
+
+## Gradual adoption
+
+1. Annotate public transform signatures first.
+2. Add `mypy`/`pyright` in CI on `src/transforms`.
+3. Keep runtime asserts for data — types don't validate parquet.
 
 ## Exercises
 
 ### Exercise 1
-Parse `BATCH_DATE=YYYY-MM-DD` from env into a `date` and reject other formats.
+Define a `TypedDict` for a SCD2 dimension row (`natural_key`, `valid_from`, `valid_to`, `is_current`).
 
 ### Exercise 2
-Make `SnowflakeJobConfig` reject empty strings even if the key exists.
-
-## Cheat sheet
-
-| Idea | Practice |
-|------|----------|
-| Immutability | `frozen=True` dataclasses |
-| Fail fast | Validate in `from_env` |
-| Boundaries | Types on public functions only if needed |
+Write a Protocol that requires `.select(*cols)` and use it in a helper signature.

@@ -1,8 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #070b12;
+  --background: #060910;
   --foreground: #e8eef7;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --accent: #22d3ee;
+  --glow: rgba(34, 211, 238, 0.35);
+}
+
+html.light {
+  --background: #f4f7fb;
+  --foreground: #0f172a;
+  --card: rgba(255, 255, 255, 0.72);
+  --card-border: rgba(15, 23, 42, 0.08);
+  --accent: #0891b2;
+  --glow: rgba(8, 145, 178, 0.25);
+  color-scheme: light;
 }
 
 @theme inline {
@@ -18,16 +32,47 @@ html {
 
 body {
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(34, 211, 238, 0.08), transparent 60%),
-    radial-gradient(900px 500px at 90% 0%, rgba(37, 99, 235, 0.1), transparent 55%),
+    radial-gradient(1200px 600px at 8% -12%, rgba(34, 211, 238, 0.1), transparent 55%),
+    radial-gradient(900px 500px at 92% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
+    radial-gradient(700px 400px at 50% 100%, rgba(14, 165, 233, 0.06), transparent 50%),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   min-height: 100%;
 }
 
+html.light body {
+  background:
+    radial-gradient(1200px 600px at 8% -12%, rgba(8, 145, 178, 0.08), transparent 55%),
+    radial-gradient(900px 500px at 92% 0%, rgba(79, 70, 229, 0.06), transparent 50%),
+    var(--background);
+}
+
 ::selection {
-  background: rgba(34, 211, 238, 0.35);
+  background: var(--glow);
+}
+
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 20px 50px -30px rgba(0, 0, 0, 0.6);
+}
+
+html.light .glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.65));
+  box-shadow: 0 18px 40px -28px rgba(15, 23, 42, 0.35);
+}
+
+.glass-hover {
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.glass-hover:hover {
+  border-color: rgba(34, 211, 238, 0.35);
+  transform: translateY(-1px);
 }
 
 .prose-de {
@@ -35,6 +80,8 @@ body {
   line-height: 1.7;
   font-size: 0.975rem;
 }
+
+html.light .prose-de { color: #334155; }
 
 .prose-de h1,
 .prose-de h2,
@@ -46,26 +93,25 @@ body {
   margin-bottom: 0.6em;
 }
 
+html.light .prose-de h1,
+html.light .prose-de h2,
+html.light .prose-de h3 { color: #0f172a; }
+
 .prose-de h1 { font-size: 1.75rem; }
 .prose-de h2 { font-size: 1.35rem; }
 .prose-de h3 { font-size: 1.1rem; }
-
 .prose-de p { margin: 0.9em 0; }
-
 .prose-de a {
   color: #67e8f9;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-
 .prose-de ul,
 .prose-de ol {
   margin: 0.9em 0;
   padding-left: 1.25rem;
 }
-
 .prose-de li { margin: 0.35em 0; }
-
 .prose-de code {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.85em;
@@ -75,7 +121,11 @@ body {
   padding: 0.1rem 0.35rem;
   color: #e2e8f0;
 }
-
+html.light .prose-de code {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
 .prose-de pre {
   margin: 1.1em 0;
   overflow-x: auto;
@@ -84,7 +134,6 @@ body {
   background: #0b1220;
   padding: 1rem 1.1rem;
 }
-
 .prose-de pre code {
   background: transparent;
   border: 0;
@@ -92,37 +141,40 @@ body {
   font-size: 0.82rem;
   color: #dbe4f0;
 }
-
 .prose-de table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.2em 0;
   font-size: 0.9rem;
 }
-
 .prose-de th,
 .prose-de td {
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.55rem 0.75rem;
   text-align: left;
 }
-
 .prose-de th {
   background: rgba(255, 255, 255, 0.04);
   color: #fff;
 }
-
 .prose-de blockquote {
   border-left: 3px solid rgba(34, 211, 238, 0.5);
   margin: 1em 0;
   padding-left: 1rem;
   color: #a8b3c2;
 }
-
 .prose-de hr {
   border: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 2em 0;
 }
-
 .prose-de strong { color: #f1f5f9; }
+html.light .prose-de strong { color: #0f172a; }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+}
+.live-dot {
+  animation: pulse-glow 2s ease-in-out infinite;
+}

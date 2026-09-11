@@ -8,7 +8,7 @@ export function NewsCard({ item, compact = false }: { item: NewsItem; compact?: 
   return (
     <Link
       href={`/news/${item.slug}`}
-      className="group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 shadow-xl shadow-black/20 transition hover:border-cyan-500/30 hover:from-white/[0.08]"
+      className="group glass glass-hover flex h-full flex-col rounded-2xl p-5"
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex flex-wrap gap-1.5">

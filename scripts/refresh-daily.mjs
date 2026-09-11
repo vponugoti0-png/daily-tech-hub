@@ -58,7 +58,7 @@ function main() {
 
   // Lessons: scrape slugs from markdown frontmatter lightly
   const lessonSlugs = [];
-  for (const track of ["python", "sql", "git"]) {
+  for (const track of ["python", "sql", "databricks", "snowflake", "git"]) {
     const dir = path.join(contentRoot, "training", track);
     for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
       const raw = fs.readFileSync(path.join(dir, file), "utf8");

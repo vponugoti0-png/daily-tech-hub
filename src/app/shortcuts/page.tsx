@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { getAllShortcuts } from "@/lib/content";
-import { ShortcutCard } from "@/components/ShortcutCard";
 import { SectionHeader } from "@/components/SectionHeader";
+import { ShortcutsExplorer } from "@/components/shortcuts/ShortcutsExplorer";
 
 export const metadata: Metadata = {
   title: "Shortcuts",
-  description: "Tips and cheat sheets for the data engineering stack.",
+  description:
+    "Keyboard, CLI, SQL, and AI shortcuts for Snowflake, Databricks, Python, SQL/PySpark, Git, and more.",
 };
 
 export default function ShortcutsPage() {
@@ -14,14 +15,10 @@ export default function ShortcutsPage() {
     <div>
       <SectionHeader
         eyebrow="Shortcuts"
-        title="Tips & cheat sheets"
-        description="High-frequency Snowflake, PySpark, Databricks, SQL, Python, and Git patterns."
+        title="Commands, keys & AI by tool"
+        description="Filter by Snowflake, Databricks, Python, SQL/PySpark, Git, editors, dbt, and cloud CLIs. Copy-paste ready snippets with sources."
       />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
-          <ShortcutCard key={item.slug} item={item} />
-        ))}
-      </div>
+      <ShortcutsExplorer items={items} />
     </div>
   );
 }

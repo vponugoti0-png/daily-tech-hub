@@ -1,8 +1,8 @@
 {
   "date": "2026-09-11",
   "lastUpdated": "2026-09-11T16:29:20.059Z",
-  "headline": "Today's Data Engineering Digest",
-  "blurb": "Today’s mix: warehouse SQL tips, incremental load patterns, and release notes worth skimming before you upgrade runtimes.",
+  "headline": "Daily Tech Hub v2 — Interactive DE Training",
+  "blurb": "Premium tracks for Python, SQL, Databricks, and Snowflake — with quizzes, progress tracking, and a live digest of news, releases, and shortcuts.",
   "featuredNewsSlugs": [
     "databricks-serverless-sql-cost-controls",
     "python-3-13-typing-and-perf",
@@ -10,9 +10,10 @@
     "snowflake-cortex-search-for-docs"
   ],
   "featuredLessonSlugs": [
-    "python-typing-for-pipelines",
-    "python-testing-spark-logic",
-    "sql-window-functions-de"
+    "python-dataframe-contracts",
+    "sql-window-functions-de",
+    "dbx-delta-lake-basics",
+    "sf-streams-tasks"
   ],
   "featuredReleaseSlugs": [
     "pyspark-4-0-preview",
@@ -20,8 +21,9 @@
     "snowflake-2026-08-release"
   ],
   "featuredShortcutSlugs": [
-    "python-de-snippets",
-    "sql-window-quickref",
-    "snowflake-sql-cheat-sheet"
+    "snowflake-cortex-ai",
+    "databricks-cli-sql-cheatsheet",
+    "sql-pyspark-windows",
+    "python-de-cli-snippets"
   ]
 }

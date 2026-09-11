@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s · Daily Tech Hub",
   },
   description:
-    "Personal daily tech hub for data engineers — Snowflake, Databricks, Python, and PySpark news, training, releases, and shortcuts.",
+    "Premium daily tech hub for data engineers — interactive courses, shortcuts (CLI/SQL/keyboard/AI), news, and releases for Snowflake, Databricks, Python, and SQL.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -31,6 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
         <Header />

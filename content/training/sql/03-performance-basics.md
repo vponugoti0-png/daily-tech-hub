@@ -1,53 +1,39 @@
 ---
 slug: sql-performance-basics
 track: sql
-title: SQL performance basics for warehouses
-description: Clustering, pruning, and selective predicates—practical knobs on Snowflake and Databricks SQL.
-level: beginner
+title: "SQL performance basics for warehouses"
+description: "Predicate pushdown, clustering/partition pruning, and reading query profiles without fear."
+level: intermediate
 order: 3
-durationMinutes: 25
+durationMinutes: 35
 topics: [sql, snowflake, databricks]
 objectives:
-  - Write predicates that prune partitions/micro-partitions
-  - Avoid SELECT * in heavy scans
-  - Read a simple query profile mental model
-updatedAt: "2026-09-05"
+  - "Filter early and select only needed columns"
+  - "Understand pruning vs full scans"
+  - "Spot broadcast vs shuffle joins at a high level"
+updatedAt: "2026-09-11"
+cheatSheet:
+  - label: "Selectivity"
+    code: "WHERE event_date BETWEEN ... AND ..."
+  - label: "Avoid SELECT *"
+    code: "SELECT id, ts, amount FROM ..."
+quiz:
+  - question: "Applying a function to a filter column often…"
+    options:
+      - "Helps pruning"
+      - "Prevents partition/cluster pruning"
+      - "Deletes data"
+      - "Creates indexes automatically"
+    answer: 1
 ---
 
 # SQL performance basics for warehouses
 
-## Predicate pushdown & pruning
-
-Filter on partition/cluster keys early:
-
-```sql
-SELECT user_id, COUNT(*)
-FROM events
-WHERE event_date BETWEEN '2026-09-01' AND '2026-09-07'
-  AND event_type = 'purchase'
-GROUP BY 1;
-```
-
-## Select only needed columns
-
-Wide VARIANT/JSON columns are expensive to ship to the result set.
-
-## Join order intuition
-
-Filter each side before joining large facts to large facts; broadcast/replicate small dimensions when the engine supports it.
+- Filter on partition/cluster keys **without wrapping** in functions when possible.
+- Project fewer columns — wide rows hurt spill.
+- Check query profile: spill, shuffle bytes, pruning %.
 
 ## Exercises
 
-### Exercise 1
-Rewrite a query that filters on `TO_DATE(ts)` to use a persisted `event_date` column—and explain why.
-
-### Exercise 2
-List three profile symptoms of a cartesian join.
-
-## Cheat sheet
-
-| Symptom | Likely cause |
-|---------|--------------|
-| Bytes scanned huge | Missing prune / SELECT * |
-| Explosive rows | Bad join keys |
-| Spillage | Warehouse undersized / skew |
+1. Rewrite `WHERE DATE(ts) = CURRENT_DATE` to a range-friendly predicate.
+2. Explain why `SELECT *` into a BI tool hurts more than in a tiny ad-hoc query.

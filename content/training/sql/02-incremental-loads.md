@@ -1,57 +1,40 @@
 ---
 slug: sql-incremental-loads
 track: sql
-title: Incremental load patterns
-description: Merge, append, and microbatch strategies for Snowflake and lakehouse tables.
+title: "Incremental loads & watermarks"
+description: "High-water marks, late data, and MERGE patterns for trustworthy daily pipelines."
 level: intermediate
 order: 2
-durationMinutes: 35
+durationMinutes: 40
 topics: [sql, snowflake, databricks]
 objectives:
-  - Choose merge vs append vs rebuild
-  - Define watermarks for late data
-  - Avoid unique-key traps
-updatedAt: "2026-09-09"
+  - "Track watermarks safely"
+  - "Handle late-arriving facts"
+  - "Write idempotent MERGE statements"
+updatedAt: "2026-09-11"
+quiz:
+  - question: "A watermark should generally advance to…"
+    options:
+      - "MIN(ts) of the batch"
+      - "A conservative MAX(ts) you can re-read from"
+      - "Random UUID"
+      - "NULL always"
+    answer: 1
 ---
 
-# Incremental load patterns
-
-Full rebuilds are honest; incrementals are fast—and fragile.
-
-## Merge (SCD1 style)
+# Incremental loads & watermarks
 
 ```sql
-MERGE INTO mart.customers t
-USING stage.customers_delta s
-ON t.customer_id = s.customer_id
-WHEN MATCHED THEN UPDATE SET
-  t.email = s.email,
-  t.updated_at = s.updated_at
+MERGE INTO mart.orders t
+USING staging.orders_delta s
+ON t.order_id = s.order_id
+WHEN MATCHED AND s.updated_at > t.updated_at THEN UPDATE SET *
 WHEN NOT MATCHED THEN INSERT *;
 ```
 
-## Append with watermark
-
-Track `MAX(event_ts)` successfully loaded; next run reads `event_ts > watermark - skew`.
-
-Late data needs a reprocessing window (e.g., 2 days) or a separate repair job.
-
-## When to rebuild
-
-Small dimensions, broken keys, or changing grain → truncate+load is cheaper than debugging bad merges.
+Store `pipeline_state(job, watermark_ts)`. On failure, do not advance.
 
 ## Exercises
 
-### Exercise 1
-Given late-arriving facts up to 48h, design a watermark policy.
-
-### Exercise 2
-Explain why merging on `email` instead of `customer_id` is dangerous.
-
-## Cheat sheet
-
-| Pattern | Use when |
-|---------|----------|
-| Append | Immutable events |
-| Merge | Mutable entities |
-| Rebuild | Small / unstable grain |
+1. Design a late-data window of 2 days overlapping the watermark.
+2. Write SQL to detect duplicate natural keys in staging.
