@@ -65,21 +65,20 @@ export function CourseOutline({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const map: Record<string, boolean> = {};
-    for (const l of lessons) {
-      map[l.slug] = Boolean(getLessonProgress(track, l.slug)?.completed);
-    }
-    setDone(map);
-    const on = () => {
+    const refresh = () => {
       const m: Record<string, boolean> = {};
       for (const l of lessons) {
         m[l.slug] = Boolean(getLessonProgress(track, l.slug)?.completed);
       }
       setDone(m);
     };
-    window.addEventListener("dth-progress", on);
-    return () => window.removeEventListener("dth-progress", on);
+    refresh();
+    window.addEventListener("dth-progress", refresh);
+    return () => window.removeEventListener("dth-progress", refresh);
   }, [lessons, track]);
+
+  const current = lessons.find((l) => l.slug === currentSlug);
+  const currentDone = Boolean(done[currentSlug]);
 
   return (
     <>
@@ -106,24 +105,36 @@ export function CourseOutline({
           Course outline
         </p>
         <OutlineList lessons={lessons} currentSlug={currentSlug} track={track} done={done} />
-        {lessons.find((l) => l.slug === currentSlug)?.steps?.length ? (
+        {current?.steps?.length ? (
           <div className="mt-5 border-t border-[var(--ink-border)] pt-4">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
               This lesson
             </p>
             <ul className="space-y-1">
-              {lessons
-                .find((l) => l.slug === currentSlug)!
-                .steps!.map((s) => (
+              {current.steps.map((s) => {
+                const stepDone = s.id === "complete" && currentDone;
+                return (
                   <li key={s.id}>
                     <a
                       href={`#${s.id}`}
-                      className="block rounded-md px-2 py-1 text-xs text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--ink-fg)]"
+                      className="flex items-center gap-2 rounded-md px-2 py-1 text-xs text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--ink-fg)]"
                     >
+                      <span
+                        className={cn(
+                          "flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm",
+                          stepDone
+                            ? "bg-[var(--mint)]/20 text-[var(--mint)]"
+                            : "border border-[var(--ink-border)]",
+                        )}
+                        aria-hidden
+                      >
+                        {stepDone ? <Check className="h-2.5 w-2.5" /> : null}
+                      </span>
                       {s.title}
                     </a>
                   </li>
-                ))}
+                );
+              })}
             </ul>
           </div>
         ) : null}

@@ -141,8 +141,6 @@ export default async function LessonPage({
           <Markdown source={lesson.content} />
         </div>
 
-        <div id="exercises" className="scroll-mt-24" />
-
         {lesson.quiz?.length ? (
           <Quiz questions={lesson.quiz} track={lesson.track} slug={lesson.slug} />
         ) : null}
