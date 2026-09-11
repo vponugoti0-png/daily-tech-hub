@@ -1,4 +1,4 @@
-# Aurora / Daily Tech Hub — Fly.io (Node + better-sqlite3 + volume at /data)
+# Aurora / Daily Tech Hub — Railway/Fly (Node + better-sqlite3 + volume at /data)
 FROM node:22-bookworm-slim AS base
 RUN apt-get update \
   && apt-get install -y --no-install-recommends python3 make g++ \
@@ -13,6 +13,11 @@ RUN npm ci
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Railway injects matching service vars as build-args when ARG is declared
+ARG AUTH_SECRET
+ARG AUTH_URL
+ENV AUTH_SECRET=$AUTH_SECRET
+ENV AUTH_URL=$AUTH_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
