@@ -44,11 +44,11 @@ export function Hero({ digest }: { digest: DigestMeta }) {
   return (
     <section className="relative overflow-hidden rounded-[1.5rem] border border-[var(--ink-border)] bg-[var(--panel)] p-6 sm:p-9">
       {allow3d ? (
-        <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden>
+        <div className="pointer-events-none absolute inset-0 opacity-75" aria-hidden>
           <HeroScene />
         </div>
       ) : null}
-      {/* Playful illustration blobs */}
+      {/* Playful illustration blobs — static fallback / mobile */}
       <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[var(--violet)]/25 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute bottom-0 left-1/3 h-36 w-36 rounded-full bg-[var(--coral)]/20 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -left-8 top-1/2 h-28 w-28 rounded-full bg-[var(--sky)]/20 blur-2xl" aria-hidden />
@@ -57,6 +57,10 @@ export function Hero({ digest }: { digest: DigestMeta }) {
       <div className="relative grid gap-6 lg:grid-cols-[1.4fr_0.8fr] lg:items-center">
         <div>
           <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--violet)]/20 px-3 py-1 font-bold text-[var(--violet)] ring-1 ring-[var(--violet)]/35">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden />
+              Aurora Play Lab
+            </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--coral)]/15 px-3 py-1 font-bold text-[var(--coral)] ring-1 ring-[var(--coral)]/30">
               <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--coral)]" />
               <CalendarDays className="h-3.5 w-3.5" aria-hidden />
@@ -82,9 +86,9 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             {digest.blurb}
           </motion.p>
           <motion.div {...fade(0.08)} className="mt-6 flex flex-wrap gap-3">
-            <Link href="/training" className="btn-primary">
+            <Link href="#start-here" className="btn-primary">
               <BookOpen className="h-4 w-4" aria-hidden />
-              Start free training
+              Start here
             </Link>
             <Link href="/shortcuts" className="btn-ghost">
               <Keyboard className="h-4 w-4" aria-hidden />
@@ -99,27 +103,27 @@ export function Hero({ digest }: { digest: DigestMeta }) {
         >
           <Link
             href="/training/prompt-engineering"
-            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)] p-4 transition hover:border-[var(--coral)]/40"
+            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/90 p-4 backdrop-blur-sm transition hover:border-[var(--coral)]/40"
           >
             <p className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
-              <Sparkles className="h-3 w-3" /> Next action
+              <Sparkles className="h-3 w-3" /> Friendly first step
             </p>
             <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
-              Prompt Engineering 101
+              Learn with AI prompts
             </p>
-            <p className="mt-1 text-xs text-[var(--muted)]">6 bite-sized lessons · free cert path</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">Short lessons · copy & try</p>
           </Link>
           <Link
             href="/dashboard"
-            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)] p-4 transition hover:border-[var(--mint)]/40"
+            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/90 p-4 backdrop-blur-sm transition hover:border-[var(--mint)]/40"
           >
             <p className="font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--mint)]">
-              XP path
+              Progress path
             </p>
             <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
-              Track your progress
+              Save your wins
             </p>
-            <p className="mt-1 text-xs text-[var(--muted)]">Sign in free · sync lessons & quizzes</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">Free sign-in syncs lessons</p>
           </Link>
         </motion.div>
       </div>

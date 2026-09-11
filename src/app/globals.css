@@ -376,3 +376,31 @@ html.light .text-cyan-400\/90 {
 html.light .hover\:text-white:hover {
   color: var(--ink-fg) !important;
 }
+
+
+/* Plain-English mode: make jargon chips + glossary more visible */
+html[data-plain-english="on"] .jargon-chip {
+  background: color-mix(in oklab, var(--mint) 22%, transparent);
+  border-color: color-mix(in oklab, var(--mint) 55%, transparent);
+  color: var(--mint);
+}
+html[data-plain-english="on"] .plain-english-panel {
+  outline: 2px dashed color-mix(in oklab, var(--mint) 45%, transparent);
+  outline-offset: 4px;
+  border-radius: 1.25rem;
+}
+html[data-plain-english="off"] .plain-english-panel,
+html:not([data-plain-english]) .plain-english-panel {
+  opacity: 0.92;
+}
+
+/* Softer Next.js portal / indicator styling if anything still mounts in dev */
+nextjs-portal {
+  opacity: 0.55 !important;
+  filter: saturate(0.7);
+}
+nextjs-portal:hover,
+nextjs-portal:focus-within {
+  opacity: 1 !important;
+  filter: none;
+}

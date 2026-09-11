@@ -6,13 +6,20 @@ export function Footer({ lastUpdated }: { lastUpdated?: string }) {
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
           <p className="font-display font-semibold text-[var(--ink-fg)]">
-            Daily Tech Hub <span className="text-[var(--coral)]">v3</span>
+            Daily Tech Hub{" "}
+            <span className="rounded-md bg-[var(--violet)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+              Aurora Play Lab
+            </span>
           </p>
-          <p className="mt-1">100% free forever · Aurora Play Lab · DE + AI niche</p>
+          <p className="mt-1">100% free forever · playful learning for data + AI</p>
         </div>
         <div className="flex flex-col gap-1 sm:items-end">
           {lastUpdated ? <p>Digest updated {lastUpdated}</p> : null}
           <p>
+            <Link href="/#start-here" className="hover:text-[var(--coral)]">
+              Start here
+            </Link>
+            {" · "}
             <Link href="/signup" className="hover:text-[var(--coral)]">
               Free signup
             </Link>

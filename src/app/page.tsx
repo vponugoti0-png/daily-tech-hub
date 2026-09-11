@@ -5,10 +5,21 @@ import { LessonCard } from "@/components/LessonCard";
 import { ReleaseCard } from "@/components/ReleaseCard";
 import { ShortcutCard } from "@/components/ShortcutCard";
 import { FreeForeverBanner } from "@/components/FreeForeverBanner";
+import { StartHere } from "@/components/StartHere";
+import { JargonLegend } from "@/components/JargonTip";
 import { getFeaturedBundle, getLessonsByTrack } from "@/lib/content";
 import { PRIMARY_TRACKS } from "@/lib/tracks";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+
+const FRIENDLY_BLURB: Record<string, string> = {
+  "prompt-engineering": "Practice asking AI clear questions.",
+  "ai-data-eng": "Use AI to help with data work — safely.",
+  python: "Write small Python tools for data jobs.",
+  sql: "Ask databases questions with SQL.",
+  databricks: "Learn Databricks (DBX) lakehouse basics.",
+  snowflake: "Explore Snowflake warehouses & tables.",
+};
 
 export default function HomePage() {
   const { digest, news, lessons, releases, shortcuts } = getFeaturedBundle();
@@ -16,11 +27,21 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       <Hero digest={digest} />
+      <StartHere />
       <FreeForeverBanner />
+
+      <section className="plain-english-panel" aria-label="Plain English glossary">
+        <JargonLegend />
+      </section>
 
       <section>
         <div className="mb-4 flex items-end justify-between gap-3">
-          <h2 className="font-display text-xl font-bold text-[var(--ink-fg)]">Tracks</h2>
+          <div>
+            <p className="font-display text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--sky)]">
+              Beginner tracks
+            </p>
+            <h2 className="font-display text-xl font-bold text-[var(--ink-fg)]">Pick a course</h2>
+          </div>
           <Link href="/training" className="text-sm font-bold text-[var(--coral)]">
             All courses →
           </Link>
@@ -43,9 +64,11 @@ export default function HomePage() {
                 <h3 className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
                   {t.title}
                 </h3>
-                <p className="mt-1 line-clamp-2 text-xs text-[var(--muted)]">{t.blurb}</p>
+                <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">
+                  {FRIENDLY_BLURB[t.id] ?? t.blurb}
+                </p>
                 <p className="mt-2 text-[11px] text-[var(--muted)]">
-                  {count} lessons · ~{t.estimatedHours}h
+                  {count} short lessons · ~{t.estimatedHours}h
                 </p>
               </Link>
             );
@@ -56,8 +79,8 @@ export default function HomePage() {
       <section>
         <SectionHeader
           eyebrow="News"
-          title="Curated digest"
-          description="Skimmable headlines with why-it-matters."
+          title="What's new (skimmable)"
+          description="Short headlines — why it matters in one line."
           href="/news"
         />
         <div className="grid gap-4 sm:grid-cols-2">
@@ -71,7 +94,7 @@ export default function HomePage() {
         <SectionHeader
           eyebrow="Training"
           title="Featured lessons"
-          description="Bite-sized checkpoints with quizzes + try-it shells."
+          description="Tiny checkpoints with a quiz at the end."
           href="/training"
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -99,7 +122,7 @@ export default function HomePage() {
           <SectionHeader
             eyebrow="Shortcuts"
             title="CLI · SQL · Keyboard · AI"
-            description="Claude · Copilot · Grok + warehouse packs."
+            description="Copy-paste helpers for everyday work."
             href="/shortcuts"
           />
           <div className="grid gap-4">
@@ -112,7 +135,9 @@ export default function HomePage() {
 
       <section className="panel flex flex-col gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">Ready for the next checkpoint?</h2>
+          <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">
+            Ready for the next checkpoint?
+          </h2>
           <p className="mt-1 text-sm text-[var(--muted)]">
             Free account syncs progress. No premium tiers — ever.
           </p>

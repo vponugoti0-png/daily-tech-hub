@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, Search, X, Hexagon } from "lucide-react";
+import { Menu, Search, X, Hexagon, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { FreeForeverBanner } from "@/components/FreeForeverBanner";
+import { PlainEnglishToggle } from "@/components/PlainEnglishToggle";
 
 const NAV = [
   { href: "/", label: "Today" },
@@ -25,21 +26,21 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--ink-border)] bg-[color-mix(in_oklab,var(--canvas)_88%,transparent)] backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-display font-bold text-[var(--ink-fg)]"
+          className="flex min-w-0 items-center gap-2 font-display font-bold text-[var(--ink-fg)]"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--coral)] text-[#1a1430] shadow-[0_0_24px_var(--glow)]">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--coral)] text-[#1a1430] shadow-[0_0_24px_var(--glow)]">
             <Hexagon className="h-4 w-4" aria-hidden />
           </span>
-          <span className="hidden sm:inline">Daily Tech Hub</span>
-          <span className="rounded-md bg-[var(--violet)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white sm:ml-1">
-            v3
+          <span className="hidden truncate sm:inline">Daily Tech Hub</span>
+          <span className="hidden rounded-md bg-[var(--violet)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white sm:inline">
+            Aurora
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {NAV.map((item) => {
             const active =
               item.href === "/"
@@ -50,7 +51,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-lg px-3 py-1.5 text-sm font-semibold transition",
+                  "rounded-lg px-2.5 py-1.5 text-sm font-semibold transition",
                   active
                     ? "bg-[var(--panel-2)] text-[var(--ink-fg)]"
                     : "text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--ink-fg)]",
@@ -63,35 +64,51 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <span className="hidden lg:inline">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="hidden xl:inline">
             <FreeForeverBanner compact />
+          </span>
+          <span className="hidden sm:inline">
+            <PlainEnglishToggle compact />
           </span>
           <ThemeToggle />
           <Link
             href="/search"
-            className="inline-flex min-h-[40px] items-center gap-2 rounded-[12px] border border-[var(--ink-border)] bg-[var(--panel)] px-3 py-1.5 text-sm text-[var(--muted)] transition hover:text-[var(--ink-fg)]"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-[12px] border border-[var(--ink-border)] bg-[var(--panel)] px-2.5 text-sm text-[var(--muted)] transition hover:text-[var(--ink-fg)] sm:px-3"
             aria-label="Search"
           >
             <Search className="h-4 w-4" aria-hidden />
-            <span className="hidden sm:inline">Search</span>
+            <span className="hidden md:inline">Search</span>
           </Link>
           {!loading && user ? (
-            <button
-              type="button"
-              onClick={() => void logout()}
-              className="hidden rounded-lg px-2 py-1.5 text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink-fg)] sm:inline"
-            >
-              Sign out
-            </button>
+            <div className="hidden items-center gap-1.5 sm:flex">
+              <Link
+                href="/dashboard"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] border border-[var(--mint)]/40 bg-[var(--mint)]/15 px-3 py-2 text-sm font-bold text-[var(--mint)]"
+              >
+                <UserRound className="h-4 w-4" aria-hidden />
+                <span className="max-w-[7rem] truncate">{user.name || user.email?.split("@")[0] || "Account"}</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => void logout()}
+                className="rounded-lg px-2 py-1.5 text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink-fg)]"
+              >
+                Sign out
+              </button>
+            </div>
           ) : !loading ? (
-            <Link href="/login" className="hidden text-xs font-bold text-[var(--coral)] sm:inline">
+            <Link
+              href="/login"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] bg-[var(--coral)] px-3.5 py-2 text-sm font-bold text-[#1a1430] shadow-[0_3px_0_color-mix(in_oklab,var(--coral)_55%,#000)] sm:px-4"
+            >
+              <UserRound className="h-4 w-4" aria-hidden />
               Sign in
             </Link>
           ) : null}
           <button
             type="button"
-            className="rounded-lg p-2 text-[var(--muted)] hover:bg-[var(--panel-2)] md:hidden"
+            className="rounded-lg p-2.5 text-[var(--muted)] hover:bg-[var(--panel-2)] lg:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={open}
@@ -103,7 +120,7 @@ export function Header() {
       </div>
 
       {open ? (
-        <div id="mobile-nav" className="border-t border-[var(--ink-border)] px-4 py-3 md:hidden">
+        <div id="mobile-nav" className="border-t border-[var(--ink-border)] px-4 py-3 lg:hidden">
           <nav className="flex flex-col gap-1" aria-label="Mobile">
             {NAV.map((item) => (
               <Link
@@ -115,6 +132,9 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            <div className="px-1 py-2">
+              <PlainEnglishToggle />
+            </div>
             <Link
               href={user ? "/dashboard" : "/signup"}
               onClick={() => setOpen(false)}
