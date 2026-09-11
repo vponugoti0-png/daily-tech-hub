@@ -8,6 +8,22 @@ import { formatDate, formatDateTime, relativeTime } from "@/lib/dates";
 import type { DigestMeta } from "@/lib/types";
 import { BookOpen, CalendarDays, Keyboard, RefreshCw, Sparkles } from "lucide-react";
 
+function RelativeUpdated({ value }: { value: string }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // First paint matches SSR (absolute); relative time only after mount.
+  return (
+    <>
+      <span suppressHydrationWarning>
+        {mounted ? relativeTime(value) : formatDateTime(value)}
+      </span>
+      {mounted ? (
+        <span className="hidden sm:inline"> · {formatDateTime(value)}</span>
+      ) : null}
+    </>
+  );
+}
+
 const HeroScene = dynamic(
   () => import("@/components/three/HeroScene").then((m) => m.HeroScene),
   {
@@ -67,8 +83,7 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             </span>
             <span className="inline-flex items-center gap-1.5">
               <RefreshCw className="h-3.5 w-3.5" aria-hidden />
-              {relativeTime(digest.lastUpdated)}
-              <span className="hidden sm:inline">· {formatDateTime(digest.lastUpdated)}</span>
+              <RelativeUpdated value={digest.lastUpdated} />
             </span>
 </div>
           <motion.h1
