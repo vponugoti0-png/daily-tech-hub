@@ -1,0 +1,86 @@
+[
+  {
+    "slug": "snowflake-dynamic-tables-ga-improvements",
+    "title": "Snowflake Dynamic Tables: refresh modes and cost observability upgrades",
+    "source": "Snowflake Engineering Blog",
+    "sourceUrl": "https://www.snowflake.com/blog/",
+    "summary": "Dynamic Tables gain clearer refresh-mode guidance, better lag metrics, and warehouse-cost visibility so incremental pipelines are easier to operate in production.",
+    "whyItMatters": "If you maintain near-real-time marts without managing tasks by hand, these observability hooks reduce surprise warehouse spend and make SLAs measurable.",
+    "topics": ["snowflake", "sql"],
+    "publishedAt": "2026-09-10",
+    "featured": true
+  },
+  {
+    "slug": "databricks-serverless-sql-cost-controls",
+    "title": "Databricks Serverless SQL: budget policies and predictive scaling",
+    "source": "Databricks Blog",
+    "sourceUrl": "https://www.databricks.com/blog",
+    "summary": "Serverless SQL warehouses now expose tighter budget policies, idle detection, and predictive scaling that keeps BI queries snappy without overnight cost spikes.",
+    "whyItMatters": "Data engineers owning shared BI endpoints can enforce spend guardrails while keeping p95 latency acceptable for analysts.",
+    "topics": ["databricks", "sql"],
+    "publishedAt": "2026-09-09",
+    "featured": true
+  },
+  {
+    "slug": "python-3-13-typing-and-perf",
+    "title": "Python 3.13: free-threaded progress, faster typing, and better errors",
+    "source": "Python.org / PEPs digest",
+    "sourceUrl": "https://www.python.org/",
+    "summary": "Python 3.13 continues free-threaded CPython work, improves typing performance for large codebases, and ships clearer traceback hints for common data-pipeline mistakes.",
+    "whyItMatters": "ETL utilities and PySpark driver code benefit from clearer errors and faster type-check cycles in CI—especially monorepos with heavy pydantic/pandas usage.",
+    "topics": ["python"],
+    "publishedAt": "2026-09-08",
+    "featured": true
+  },
+  {
+    "slug": "pyspark-connect-client-server",
+    "title": "Spark Connect matures: thinner clients for PySpark notebooks",
+    "source": "Apache Spark / Databricks notes",
+    "sourceUrl": "https://spark.apache.org/",
+    "summary": "Spark Connect’s Python client is more stable for remote sessions, enabling notebook UX without shipping a full JVM on every laptop.",
+    "whyItMatters": "Local prototyping against a shared cluster becomes lighter, and CI can validate transforms without spinning heavyweight local Spark contexts.",
+    "topics": ["pyspark", "databricks", "python"],
+    "publishedAt": "2026-09-07",
+    "featured": true
+  },
+  {
+    "slug": "snowflake-cortex-search-for-docs",
+    "title": "Snowflake Cortex Search for internal runbooks and data contracts",
+    "source": "Snowflake AI updates",
+    "summary": "Cortex Search patterns for indexing operational docs and data contracts make it practical to answer “who owns this table?” from SQL-adjacent tooling.",
+    "whyItMatters": "Platform teams can reduce tribal knowledge lookups without standing up a separate RAG stack for every domain.",
+    "topics": ["snowflake"],
+    "publishedAt": "2026-09-05",
+    "featured": false
+  },
+  {
+    "slug": "delta-lake-liquid-clustering-tips",
+    "title": "Delta Lake liquid clustering: when to drop ZORDER habits",
+    "source": "Delta Lake / Databricks community",
+    "summary": "Practical guidance on liquid clustering vs classic OPTIMIZE+ZORDER for wide fact tables with shifting filter predicates.",
+    "whyItMatters": "Wrong clustering strategy quietly burns compute on every merge and downstream BI scan—this is a high-ROI table design choice.",
+    "topics": ["databricks", "pyspark"],
+    "publishedAt": "2026-09-04",
+    "featured": false
+  },
+  {
+    "slug": "dbt-snowflake-materialization-patterns",
+    "title": "dbt + Snowflake: incremental strategies that survive late-arriving data",
+    "source": "dbt Community / practitioners",
+    "summary": "A roundup of merge vs delete+insert vs microbatch patterns for late-arriving facts on Snowflake, with gotchas around unique keys.",
+    "whyItMatters": "Most “broken dashboard” incidents trace back to incremental assumptions—locking the right strategy early saves weekend firefights.",
+    "topics": ["snowflake", "sql"],
+    "publishedAt": "2026-09-03",
+    "featured": false
+  },
+  {
+    "slug": "polars-vs-pandas-etl-edges",
+    "title": "Polars vs pandas at the edges of Spark jobs",
+    "source": "Python data ecosystem",
+    "summary": "When to pull a partition into Polars for local transforms versus staying in Spark—memory, UDFs, and serialization tradeoffs.",
+    "whyItMatters": "Hybrid pipelines are common; choosing the right local engine cuts driver OOM and speeds unit tests of business logic.",
+    "topics": ["python", "pyspark"],
+    "publishedAt": "2026-09-02",
+    "featured": false
+  }
+]

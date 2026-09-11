@@ -1,0 +1,69 @@
+[
+  {
+    "slug": "snowflake-2026-08-release",
+    "product": "Snowflake",
+    "version": "2026.08",
+    "title": "Snowflake August 2026 behavior change bundle",
+    "summary": "Governance, Dynamic Tables metrics, and SQL function hardening land in the August bundle—review before enabling in prod accounts.",
+    "whatChanged": [
+      "Improved Dynamic Tables lag and refresh cost metrics in ACCOUNT_USAGE",
+      "Stricter default privileges on newly created schemas in some editions",
+      "New SQL functions for safer date/time truncation patterns",
+      "Cortex Search indexing limits raised for mid-size document corpora"
+    ],
+    "whyReadNow": "Behavior change bundles can alter privilege defaults and cost signals. Skim before your next maintenance window so CI and IaC stay aligned.",
+    "topics": ["snowflake", "sql"],
+    "releasedAt": "2026-08-28",
+    "sourceUrl": "https://docs.snowflake.com/"
+  },
+  {
+    "slug": "databricks-runtime-16-brief",
+    "product": "Databricks Runtime",
+    "version": "16.x",
+    "title": "Databricks Runtime 16: Photon + Spark Connect highlights",
+    "summary": "DBR 16 tightens Photon coverage for common SQL/Python workloads and improves Spark Connect session reliability for notebook clients.",
+    "whatChanged": [
+      "Broader Photon acceleration for window and aggregate plans",
+      "Spark Connect Python client stability and auth refresh fixes",
+      "Delta liquid clustering recommendations updated in docs",
+      "Better default shuffle partitions heuristics for serverless jobs"
+    ],
+    "whyReadNow": "If you pin runtime versions in job clusters, plan an upgrade path and re-benchmark critical ETL before rolling fleet-wide.",
+    "topics": ["databricks", "pyspark"],
+    "releasedAt": "2026-08-20",
+    "sourceUrl": "https://docs.databricks.com/"
+  },
+  {
+    "slug": "pyspark-4-0-preview",
+    "product": "Apache Spark / PySpark",
+    "version": "4.0 preview",
+    "title": "PySpark 4.0 preview: Connect-first and typing cleanup",
+    "summary": "Preview notes emphasize Spark Connect as a first-class path and cleaner type stubs for DataFrame APIs used in IDE-heavy workflows.",
+    "whatChanged": [
+      "Connect client APIs promoted for day-1 Python development",
+      "Improved py.typed stubs for Column and DataFrame methods",
+      "Deprecation warnings for legacy RDD-heavy examples in docs",
+      "Performance notes for Arrow-backed pandas conversion paths"
+    ],
+    "whyReadNow": "Worth a read if you maintain internal PySpark wrappers—type stubs and Connect assumptions may affect your next major bump.",
+    "topics": ["pyspark", "python"],
+    "releasedAt": "2026-08-15",
+    "sourceUrl": "https://spark.apache.org/"
+  },
+  {
+    "slug": "python-3-13-2-patch",
+    "product": "CPython",
+    "version": "3.13.2",
+    "title": "Python 3.13.2 patch release",
+    "summary": "Security and bugfix release—update base images used by Airflow/DBT containers and Databricks custom environments when feasible.",
+    "whatChanged": [
+      "Security fixes in stdlib networking helpers",
+      "Typing performance regressions addressed",
+      "asyncio edge-case fixes relevant to lightweight workers"
+    ],
+    "whyReadNow": "Patch releases are low-drama upgrades that close CVEs in shared CI images—schedule alongside your next image rebuild.",
+    "topics": ["python"],
+    "releasedAt": "2026-09-01",
+    "sourceUrl": "https://www.python.org/downloads/"
+  }
+]

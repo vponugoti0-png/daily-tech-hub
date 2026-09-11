@@ -1,0 +1,166 @@
+[
+  {
+    "slug": "snowflake-sql-cheat-sheet",
+    "title": "Snowflake SQL cheat sheet",
+    "category": "SQL / Snowflake",
+    "summary": "High-frequency Snowflake SQL for warehouses, clones, time travel, and TASK/STREAM patterns.",
+    "topics": ["snowflake", "sql"],
+    "updatedAt": "2026-09-11",
+    "tips": [
+      {
+        "title": "Zero-copy clone for safe experiments",
+        "body": "Clone a table or schema before destructive transforms; clones are metadata-cheap.",
+        "code": "CREATE TABLE analytics.orders_clone CLONE analytics.orders;"
+      },
+      {
+        "title": "Time travel peek",
+        "body": "Inspect a prior version without restoring.",
+        "code": "SELECT * FROM analytics.orders AT (OFFSET => -60*60);"
+      },
+      {
+        "title": "Warehouse sizing intuition",
+        "body": "Scale up for single large queries; scale out (multi-cluster) for concurrency. Prefer auto-suspend ≤ 60s for ad-hoc warehouses."
+      },
+      {
+        "title": "QUALIFY with windows",
+        "body": "Filter window results without a subquery.",
+        "code": "SELECT * FROM events\nQUALIFY ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY ts DESC) = 1;"
+      }
+    ]
+  },
+  {
+    "slug": "pyspark-transform-patterns",
+    "title": "PySpark transform patterns",
+    "category": "PySpark",
+    "summary": "Idiomatic DataFrame transforms for joins, late data, and testable pipelines.",
+    "topics": ["pyspark", "python", "databricks"],
+    "updatedAt": "2026-09-10",
+    "tips": [
+      {
+        "title": "Prefer columns over UDFs",
+        "body": "Built-in functions stay in the JVM Catalyst plan; Python UDFs serialize row-by-row.",
+        "code": "from pyspark.sql import functions as F\ndf = df.withColumn(\"dt\", F.to_date(\"ts\"))"
+      },
+      {
+        "title": "Broadcast small dimensions",
+        "body": "Hint broadcast for dimension tables that fit in executor memory.",
+        "code": "from pyspark.sql.functions import broadcast\nout = facts.join(broadcast(dims), \"id\")"
+      },
+      {
+        "title": "Repartition before wide writes",
+        "body": "Control output file counts explicitly before Delta/Parquet writes to avoid tiny-file storms.",
+        "code": "df.repartition(64, \"dt\").write.mode(\"overwrite\").partitionBy(\"dt\").saveAsTable(\"mart.events\")"
+      },
+      {
+        "title": "Incremental watermark mindset",
+        "body": "For streaming/structured streaming, set watermarks on event time before windowed aggregations."
+      }
+    ]
+  },
+  {
+    "slug": "git-daily-commands",
+    "title": "Git daily commands for data PRs",
+    "category": "Git",
+    "summary": "Safe daily Git workflows for dbt/SQL/Python repos—rebase, fixup, and bisect without drama.",
+    "topics": ["git"],
+    "updatedAt": "2026-09-09",
+    "tips": [
+      {
+        "title": "Update feature branch cleanly",
+        "body": "Prefer rebase onto main for linear history on personal branches.",
+        "code": "git fetch origin && git rebase origin/main"
+      },
+      {
+        "title": "Fixup last commit message",
+        "body": "Amend only if the commit is still local / not shared.",
+        "code": "git commit --amend -m \"fix: correct late-arriving key logic\""
+      },
+      {
+        "title": "Find which commit broke a test",
+        "code": "git bisect start\ngit bisect bad\ngit bisect good <known-good-sha>"
+      },
+      {
+        "title": "Stash including untracked seeds",
+        "code": "git stash push -u -m \"wip: notebook scratch\""
+      }
+    ]
+  },
+  {
+    "slug": "databricks-notebook-shortcuts",
+    "title": "Databricks notebook & jobs shortcuts",
+    "category": "Databricks",
+    "summary": "Keyboard and ops shortcuts that speed debugging on interactive clusters and jobs.",
+    "topics": ["databricks", "pyspark"],
+    "updatedAt": "2026-09-08",
+    "tips": [
+      {
+        "title": "%run vs widgets",
+        "body": "Use widgets for parameterized jobs; reserve %run for shared setup cells you control."
+      },
+      {
+        "title": "Display plans quickly",
+        "code": "df.explain(\"formatted\")"
+      },
+      {
+        "title": "Job cluster vs all-purpose",
+        "body": "Production ETL should run on job clusters; keep all-purpose for exploration to control cost."
+      },
+      {
+        "title": "dbutils.fs for quick checks",
+        "code": "dbutils.fs.ls(\"/Volumes/main/raw/events/\")"
+      }
+    ]
+  },
+  {
+    "slug": "python-de-snippets",
+    "title": "Python snippets for data engineers",
+    "category": "Python",
+    "summary": "Pathlib, logging, retries, and config patterns that belong in every ETL utility module.",
+    "topics": ["python"],
+    "updatedAt": "2026-09-07",
+    "tips": [
+      {
+        "title": "Structured logging over print",
+        "code": "import logging\nlog = logging.getLogger(__name__)\nlog.info(\"loaded rows\", extra={\"count\": n})"
+      },
+      {
+        "title": "Pathlib for local artifacts",
+        "code": "from pathlib import Path\nout = Path(\"artifacts\") / f\"report_{ds}.parquet\""
+      },
+      {
+        "title": "Tenacity-style retry sketch",
+        "body": "Wrap flaky API pulls with exponential backoff; never retry non-idempotent loads blindly."
+      },
+      {
+        "title": "dataclass configs",
+        "code": "from dataclasses import dataclass\n@dataclass(frozen=True)\nclass JobConfig:\n    env: str\n    warehouse: str"
+      }
+    ]
+  },
+  {
+    "slug": "sql-window-quickref",
+    "title": "SQL window functions quickref",
+    "category": "SQL",
+    "summary": "ROW_NUMBER, LAG/LEAD, and running totals—patterns you reuse in Snowflake and Spark SQL.",
+    "topics": ["sql", "snowflake", "databricks"],
+    "updatedAt": "2026-09-06",
+    "tips": [
+      {
+        "title": "Deduplicate to latest",
+        "code": "ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC)"
+      },
+      {
+        "title": "Previous period compare",
+        "code": "LAG(revenue) OVER (PARTITION BY account ORDER BY month)"
+      },
+      {
+        "title": "Running total",
+        "code": "SUM(amount) OVER (PARTITION BY account ORDER BY day ROWS UNBOUNDED PRECEDING)"
+      },
+      {
+        "title": "NTILE for cohorts",
+        "code": "NTILE(4) OVER (ORDER BY score DESC)"
+      }
+    ]
+  }
+]

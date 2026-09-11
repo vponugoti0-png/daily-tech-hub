@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-11",
+  "lastUpdated": "2026-09-11T16:29:20.059Z",
+  "headline": "Today's Data Engineering Digest",
+  "blurb": "Today’s mix: warehouse SQL tips, incremental load patterns, and release notes worth skimming before you upgrade runtimes.",
+  "featuredNewsSlugs": [
+    "databricks-serverless-sql-cost-controls",
+    "python-3-13-typing-and-perf",
+    "pyspark-connect-client-server",
+    "snowflake-cortex-search-for-docs"
+  ],
+  "featuredLessonSlugs": [
+    "python-typing-for-pipelines",
+    "python-testing-spark-logic",
+    "sql-window-functions-de"
+  ],
+  "featuredReleaseSlugs": [
+    "pyspark-4-0-preview",
+    "python-3-13-2-patch",
+    "snowflake-2026-08-release"
+  ],
+  "featuredShortcutSlugs": [
+    "python-de-snippets",
+    "sql-window-quickref",
+    "snowflake-sql-cheat-sheet"
+  ]
+}

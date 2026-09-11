@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  --background: #070b12;
+  --foreground: #e8eef7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(34, 211, 238, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 90% 0%, rgba(37, 99, 235, 0.1), transparent 55%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  min-height: 100%;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.35);
+}
+
+.prose-de {
+  color: #c4cdd8;
+  line-height: 1.7;
+  font-size: 0.975rem;
+}
+
+.prose-de h1,
+.prose-de h2,
+.prose-de h3 {
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 1.75em;
+  margin-bottom: 0.6em;
+}
+
+.prose-de h1 { font-size: 1.75rem; }
+.prose-de h2 { font-size: 1.35rem; }
+.prose-de h3 { font-size: 1.1rem; }
+
+.prose-de p { margin: 0.9em 0; }
+
+.prose-de a {
+  color: #67e8f9;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-de ul,
+.prose-de ol {
+  margin: 0.9em 0;
+  padding-left: 1.25rem;
+}
+
+.prose-de li { margin: 0.35em 0; }
+
+.prose-de code {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.85em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.35rem;
+  color: #e2e8f0;
+}
+
+.prose-de pre {
+  margin: 1.1em 0;
+  overflow-x: auto;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0b1220;
+  padding: 1rem 1.1rem;
+}
+
+.prose-de pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: 0.82rem;
+  color: #dbe4f0;
+}
+
+.prose-de table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.9rem;
+}
+
+.prose-de th,
+.prose-de td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+}
+
+.prose-de th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+}
+
+.prose-de blockquote {
+  border-left: 3px solid rgba(34, 211, 238, 0.5);
+  margin: 1em 0;
+  padding-left: 1rem;
+  color: #a8b3c2;
+}
+
+.prose-de hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2em 0;
+}
+
+.prose-de strong { color: #f1f5f9; }
