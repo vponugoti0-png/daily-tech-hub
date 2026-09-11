@@ -42,10 +42,12 @@ COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/next.config.ts ./next.config.ts
 COPY --from=builder /app/lesson-redirects.json ./lesson-redirects.json
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+  && mkdir -p /data \
+  && chown -R node:node /app /data
 
-# Drop build toolchain in final image weight? keep g++ already in base for native rebuilds if needed.
-RUN mkdir -p /data && chown -R node:node /app /data
-USER node
-
+# Stay root so entrypoint can chown the mounted volume, then drop to node.
 EXPOSE 3000
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["sh", "-c", "npm run start -- -H 0.0.0.0 -p ${PORT:-3000}"]

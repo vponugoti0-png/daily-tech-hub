@@ -103,13 +103,29 @@ export function Header() {
               </button>
             </div>
           ) : (
-            <Link
-              href="/login"
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] bg-[var(--coral)] px-3.5 py-2 text-sm font-bold text-[#1a1430] shadow-[0_3px_0_color-mix(in_oklab,var(--coral)_55%,#000)] sm:px-4"
-            >
-              <UserRound className="h-4 w-4" aria-hidden />
-              Sign in
-            </Link>
+            <>
+              <div className="hidden items-center gap-1.5 sm:flex">
+                <Link
+                  href="/login"
+                  className="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink-fg)]"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] bg-[var(--coral)] px-3.5 py-2 text-sm font-bold text-[#1a1430] shadow-[0_3px_0_color-mix(in_oklab,var(--coral)_55%,#000)] sm:px-4"
+                >
+                  <UserRound className="h-4 w-4" aria-hidden />
+                  Sign up
+                </Link>
+              </div>
+              <Link
+                href="/signup"
+                className="inline-flex min-h-[44px] items-center rounded-[14px] bg-[var(--coral)] px-3 py-2 text-sm font-bold text-[#1a1430] sm:hidden"
+              >
+                Sign up
+              </Link>
+            </>
           )}
           <button
             type="button"
