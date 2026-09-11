@@ -6,6 +6,7 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { pushLocalProgressToServer } from "@/lib/progress";
+import { authedFetch } from "@/lib/auth/client";
 
 function LoginForm() {
   const router = useRouter();
@@ -32,9 +33,8 @@ function LoginForm() {
     setBusy(true);
     setError("");
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await authedFetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();

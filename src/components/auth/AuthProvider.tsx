@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { mergeServerProgress, pushLocalProgressToServer } from "@/lib/progress";
+import { authedFetch } from "@/lib/auth/client";
 
 export type AuthUser = { id: number; email: string; name: string };
 
@@ -73,7 +74,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    try {
+      await authedFetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      /* still clear client state */
+    }
     setUser(null);
   }, []);
 

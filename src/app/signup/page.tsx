@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { pushLocalProgressToServer } from "@/lib/progress";
+import { authedFetch } from "@/lib/auth/client";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -21,9 +22,8 @@ export default function SignupPage() {
     setBusy(true);
     setError("");
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await authedFetch("/api/auth/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
       const data = await res.json();
@@ -85,11 +85,11 @@ export default function SignupPage() {
             />
           </label>
           <label className="block text-sm">
-            <span className="mb-1.5 block text-[var(--muted)]">Password (min 6)</span>
+            <span className="mb-1.5 block text-[var(--muted)]">Password (min 8)</span>
             <input
               type="password"
               required
-              minLength={6}
+              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="field"

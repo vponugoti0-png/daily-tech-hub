@@ -1,6 +1,11 @@
-import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { getDb, type ProgressRow, type UserRow } from "@/lib/db";
+import {
+  BCRYPT_COST,
+  checkPassword,
+  hashPassword,
+} from "@/lib/auth/password";
+import bcrypt from "bcryptjs";
 
 export function findUserByEmail(email: string): UserRow | undefined {
   return getDb()
@@ -26,7 +31,7 @@ export function findUserByOAuth(
 }
 
 export function createUser(email: string, name: string, password: string) {
-  const hash = bcrypt.hashSync(password, 10);
+  const hash = hashPassword(password);
   const info = getDb()
     .prepare("INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)")
     .run(email.trim().toLowerCase(), name.trim(), hash);
@@ -35,7 +40,10 @@ export function createUser(email: string, name: string, password: string) {
 
 /** Random bcrypt hash that no password can match — for OAuth-only accounts. */
 export function unusablePasswordHash() {
-  return bcrypt.hashSync(`oauth-unusable:${crypto.randomBytes(32).toString("hex")}`, 10);
+  return bcrypt.hashSync(
+    `oauth-unusable:${crypto.randomBytes(32).toString("hex")}`,
+    BCRYPT_COST,
+  );
 }
 
 /**
@@ -51,7 +59,10 @@ export function upsertOAuthUser(input: {
   const provider = input.provider.trim();
   const subject = input.subject.trim();
   const emailRaw = (input.email || "").trim().toLowerCase();
-  const name = (input.name || "").trim() || emailRaw.split("@")[0] || `${provider} user`;
+  const name =
+    (input.name || "").trim() ||
+    emailRaw.split("@")[0] ||
+    `${provider} user`;
 
   const byOAuth = findUserByOAuth(provider, subject);
   if (byOAuth) {
@@ -94,12 +105,7 @@ export function upsertOAuthUser(input: {
 }
 
 export function verifyPassword(user: UserRow, password: string) {
-  if (!user.password_hash) return false;
-  try {
-    return bcrypt.compareSync(password, user.password_hash);
-  } catch {
-    return false;
-  }
+  return checkPassword(password, user.password_hash);
 }
 
 export function getProgressForUser(userId: number): ProgressRow[] {
@@ -155,6 +161,8 @@ export function upsertProgress(
   ).run(userId, patch.track, patch.slug, completed, quizScore, quizTotal, stepIndex);
 }
 
+export const MERGE_PAYLOAD_MAX_KEYS = 500;
+
 export function mergeLocalProgress(
   userId: number,
   lessons: Record<
@@ -168,8 +176,12 @@ export function mergeLocalProgress(
     }
   >,
 ) {
+  const entries = Object.entries(lessons);
+  if (entries.length > MERGE_PAYLOAD_MAX_KEYS) {
+    throw new Error(`merge payload exceeds ${MERGE_PAYLOAD_MAX_KEYS} keys`);
+  }
   const tx = getDb().transaction(() => {
-    for (const [key, val] of Object.entries(lessons)) {
+    for (const [key, val] of entries) {
       const [track, ...rest] = key.split(":");
       const slug = rest.join(":");
       if (!track || !slug) continue;

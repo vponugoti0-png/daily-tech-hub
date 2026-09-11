@@ -72,7 +72,8 @@ Lessons include objectives, try-it shells (sandbox later), quizzes, outlines (mo
 - SQLite DB: `data/dth.sqlite` (gitignored)
 - Email/password APIs: `POST /api/auth/signup|login|logout`, `GET /api/auth/me`, `GET|POST /api/progress`
 - OAuth: Auth.js / NextAuth v5 at `/api/auth/*` (App Router)
-- Sessions: email/password uses httpOnly JWT cookie `dth_session`; OAuth uses Auth.js JWT. `GET /api/auth/me` accepts either.
+- Sessions: email/password uses short-lived httpOnly access JWT (`dth_access`, 15m) + longer refresh JWT (`dth_refresh`, 30d). Access is silently rotated from refresh on `readSession`. Legacy `dth_session` is accepted once then migrated. OAuth uses Auth.js JWT. `GET /api/auth/me` accepts either and issues a CSRF cookie (`dth_csrf`) for mutating clients.
+- Mutating email/password + progress routes require double-submit CSRF (`x-csrf-token`) and login/signup are rate-limited by IP + email. Passwords use bcrypt cost 12 and min length 8 (`src/lib/auth/password.ts`).
 - Guest progress stays in `localStorage` (`dth-progress-v3`); login merges/syncs
 - OAuth users are upserted into `users` (link by email when the provider returns one; otherwise a synthetic `@oauth.local` email). `password_hash` is nullable / unusable for OAuth-only accounts. Columns: `oauth_provider`, `oauth_subject`.
 

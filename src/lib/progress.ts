@@ -1,6 +1,7 @@
 "use client";
 
 import type { TrackId } from "./types";
+import { authedFetch } from "@/lib/auth/client";
 
 const KEY = "dth-progress-v3";
 const LEGACY_KEY = "dth-progress-v2";
@@ -62,9 +63,8 @@ async function syncToServer(
   patch: Partial<LessonProgress>,
 ) {
   try {
-    await fetch("/api/progress", {
+    await authedFetch("/api/progress", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         track,
         slug,
@@ -150,9 +150,8 @@ export async function pushLocalProgressToServer() {
   const state = loadProgress();
   if (!Object.keys(state.lessons).length) return state;
   try {
-    const res = await fetch("/api/progress", {
+    const res = await authedFetch("/api/progress", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ merge: state.lessons }),
     });
     if (!res.ok) return state;

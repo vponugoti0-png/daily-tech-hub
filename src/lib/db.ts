@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
-import bcrypt from "bcryptjs";
+import { hashPassword } from "@/lib/auth/password";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "dth.sqlite");
@@ -113,7 +113,7 @@ function seedIfEmpty(db: Database.Database) {
   ];
   const tx = db.transaction(() => {
     for (const u of demo) {
-      insert.run(u.email, u.name, bcrypt.hashSync(u.password, 10));
+      insert.run(u.email, u.name, hashPassword(u.password));
     }
   });
   tx();
