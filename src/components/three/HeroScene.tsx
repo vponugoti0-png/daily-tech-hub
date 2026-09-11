@@ -16,12 +16,12 @@ function DataOrb() {
     <Float speed={1.4} rotationIntensity={0.4} floatIntensity={0.8}>
       <Sphere ref={ref} args={[1.15, 64, 64]} scale={1.15}>
         <MeshDistortMaterial
-          color="#22d3ee"
+          color="#FF6B4A"
           attach="material"
           distort={0.35}
           speed={2}
           roughness={0.2}
-          metalness={0.6}
+          metalness={0.55}
           transparent
           opacity={0.85}
         />
@@ -57,19 +57,20 @@ function OrbitRing({ radius, speed, color }: { radius: number; speed: number; co
 
 export function HeroScene() {
   return (
-    <div className="pointer-events-none absolute inset-0 -z-0 opacity-90">
+    <div className="pointer-events-none absolute inset-0 -z-0 opacity-90" aria-hidden="true">
       <Canvas
         camera={{ position: [0, 0, 5.2], fov: 42 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
+        aria-hidden
       >
         <ambientLight intensity={0.45} />
-        <directionalLight position={[4, 3, 2]} intensity={1.2} color="#a5f3fc" />
-        <directionalLight position={[-3, -2, -1]} intensity={0.4} color="#818cf8" />
+        <directionalLight position={[4, 3, 2]} intensity={1.2} color="#4CC9F0" />
+        <directionalLight position={[-3, -2, -1]} intensity={0.45} color="#9B5CFF" />
         <Stars radius={40} depth={30} count={400} factor={2} saturation={0} fade speed={0.6} />
         <DataOrb />
-        <OrbitRing radius={2.1} speed={0.35} color="#67e8f9" />
-        <OrbitRing radius={2.7} speed={-0.22} color="#818cf8" />
+        <OrbitRing radius={2.1} speed={0.35} color="#FFD166" />
+        <OrbitRing radius={2.7} speed={-0.22} color="#4CC9F0" />
       </Canvas>
     </div>
   );

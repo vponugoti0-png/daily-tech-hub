@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 /**
- * Regenerates content/digest.json for "today".
- * - Sets date + lastUpdated timestamps
- * - Rotates featured picks from available seed content (deterministic by date)
- * - Refreshes headline/blurb with a date-aware template
+ * Updates content/digest.json timestamps for "today".
+ *
+ * By default: preserves curated headline/blurb/featured* arrays (no clobber).
+ * Pass --rotate to also rotate featured picks (deterministic by date).
  *
  * Usage: node scripts/refresh-daily.mjs
- *    or: npm run refresh:daily
+ *        node scripts/refresh-daily.mjs --rotate
  */
-
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -16,6 +15,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const contentRoot = path.join(root, "content");
+const rotate = process.argv.includes("--rotate");
 
 function readJson(rel) {
   return JSON.parse(fs.readFileSync(path.join(contentRoot, rel), "utf8"));
@@ -26,12 +26,9 @@ function writeJson(rel, data) {
 }
 
 function todayParts(d = new Date()) {
-  const date = d.toISOString().slice(0, 10);
-  const lastUpdated = d.toISOString();
-  return { date, lastUpdated };
+  return { date: d.toISOString().slice(0, 10), lastUpdated: d.toISOString() };
 }
 
-/** Simple stable hash for date string → number */
 function hashDate(dateStr) {
   let h = 0;
   for (let i = 0; i < dateStr.length; i++) h = (h * 31 + dateStr.charCodeAt(i)) >>> 0;
@@ -50,53 +47,51 @@ function pickRotated(items, count, seed) {
 
 function main() {
   const { date, lastUpdated } = todayParts();
-  const seed = hashDate(date);
-
-  const news = readJson("news/items.json");
-  const releases = readJson("releases/items.json");
-  const shortcuts = readJson("shortcuts/items.json");
-
-  // Lessons: scrape slugs from markdown frontmatter lightly
-  const lessonSlugs = [];
-  for (const track of ["python", "sql", "databricks", "snowflake", "git"]) {
-    const dir = path.join(contentRoot, "training", track);
-    for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
-      const raw = fs.readFileSync(path.join(dir, file), "utf8");
-      const m = raw.match(/^slug:\s*(.+)$/m);
-      if (m) lessonSlugs.push(m[1].trim());
-    }
-  }
-
-  const featuredNews = pickRotated(news, 4, seed).map((n) => n.slug);
-  const featuredLessons = pickRotated(lessonSlugs, 3, seed + 7);
-  const featuredReleases = pickRotated(releases, 3, seed + 13).map((r) => r.slug);
-  const featuredShortcuts = pickRotated(shortcuts, 3, seed + 19).map((s) => s.slug);
-
-  const blurbs = [
-    "Snowflake governance updates, Databricks serverless wins, PySpark pattern refresher, and a Git rebase cheat sheet for safer PRs.",
-    "Today’s mix: warehouse SQL tips, incremental load patterns, and release notes worth skimming before you upgrade runtimes.",
-    "Fresh picks across the DE stack — Dynamic Tables, Photon/Spark Connect, typing for pipelines, and daily Git hygiene.",
-    "A compact digest: curated news, one lesson per track focus, release briefs, and cheat sheets you can open mid-standup.",
-  ];
+  const prev = readJson("digest.json");
 
   const digest = {
+    ...prev,
     date,
     lastUpdated,
-    headline: "Today's Data Engineering Digest",
-    blurb: blurbs[seed % blurbs.length],
-    featuredNewsSlugs: featuredNews,
-    featuredLessonSlugs: featuredLessons,
-    featuredReleaseSlugs: featuredReleases,
-    featuredShortcutSlugs: featuredShortcuts,
   };
 
+  if (rotate) {
+    const seed = hashDate(date);
+    const news = readJson("news/items.json");
+    const releases = readJson("releases/items.json");
+    const shortcuts = readJson("shortcuts/items.json");
+    const lessonSlugs = [];
+    const tracks = fs.readdirSync(path.join(contentRoot, "training")).filter((d) =>
+      fs.statSync(path.join(contentRoot, "training", d)).isDirectory(),
+    );
+    for (const track of tracks) {
+      const dir = path.join(contentRoot, "training", track);
+      for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
+        const raw = fs.readFileSync(path.join(dir, file), "utf8");
+        const m = raw.match(/^slug:\s*(.+)$/m);
+        if (m) lessonSlugs.push(m[1].trim());
+      }
+    }
+    digest.featuredNewsSlugs = pickRotated(news, 4, seed).map((n) => n.slug);
+    digest.featuredLessonSlugs = pickRotated(lessonSlugs, 4, seed + 7);
+    digest.featuredReleaseSlugs = pickRotated(releases, 3, seed + 13).map((r) => r.slug);
+    digest.featuredShortcutSlugs = pickRotated(shortcuts, 4, seed + 19).map((s) => s.slug);
+    const blurbs = [
+      "Snowflake governance updates, Databricks serverless wins, PySpark pattern refresher, and prompt-engineering drills — 100% free.",
+      "Today’s mix: warehouse SQL tips, AI assistant shortcuts, and release notes worth skimming before you upgrade runtimes.",
+      "Fresh picks across the DE stack — Dynamic Tables, Copilot/Claude/Grok packs, and daily Git hygiene.",
+      "A compact digest: curated news, AI learner tracks, release briefs, and cheat sheets you can open mid-standup.",
+    ];
+    digest.blurb = blurbs[seed % blurbs.length];
+  }
+
   writeJson("digest.json", digest);
-  console.log(`✓ Updated content/digest.json for ${date}`);
+  console.log(`✓ Updated content/digest.json for ${date}${rotate ? " (rotated featured)" : " (preserved curated featured)"}`);
   console.log(`  lastUpdated: ${lastUpdated}`);
-  console.log(`  featured news: ${featuredNews.join(", ")}`);
-  console.log(`  featured lessons: ${featuredLessons.join(", ")}`);
-  console.log(`  featured releases: ${featuredReleases.join(", ")}`);
-  console.log(`  featured shortcuts: ${featuredShortcuts.join(", ")}`);
+  console.log(`  featured news: ${digest.featuredNewsSlugs.join(", ")}`);
+  console.log(`  featured lessons: ${digest.featuredLessonSlugs.join(", ")}`);
+  console.log(`  featured releases: ${digest.featuredReleaseSlugs.join(", ")}`);
+  console.log(`  featured shortcuts: ${digest.featuredShortcutSlugs.join(", ")}`);
 }
 
 main();

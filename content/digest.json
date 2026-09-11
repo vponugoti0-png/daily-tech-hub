@@ -1,8 +1,8 @@
 {
   "date": "2026-09-11",
   "lastUpdated": "2026-09-11T16:29:20.059Z",
-  "headline": "Daily Tech Hub v2 — Interactive DE Training",
-  "blurb": "Premium tracks for Python, SQL, Databricks, and Snowflake — with quizzes, progress tracking, and a live digest of news, releases, and shortcuts.",
+  "headline": "Daily Tech Hub v3 \u2014 Free DE + AI Play Lab",
+  "blurb": "100% free forever: prompt engineering, AI for data engineers, Snowflake/DBX tracks, and Claude \u00b7 Copilot \u00b7 Grok shortcuts \u2014 with synced progress when you sign in.",
   "featuredNewsSlugs": [
     "databricks-serverless-sql-cost-controls",
     "python-3-13-typing-and-perf",
@@ -10,10 +10,10 @@
     "snowflake-cortex-search-for-docs"
   ],
   "featuredLessonSlugs": [
+    "pe-ask-better-questions",
+    "ai-de-copilot-mindset",
     "python-dataframe-contracts",
-    "sql-window-functions-de",
-    "dbx-delta-lake-basics",
-    "sf-streams-tasks"
+    "sql-window-functions-de"
   ],
   "featuredReleaseSlugs": [
     "pyspark-4-0-preview",
@@ -21,9 +21,9 @@
     "snowflake-2026-08-release"
   ],
   "featuredShortcutSlugs": [
-    "snowflake-cortex-ai",
-    "databricks-cli-sql-cheatsheet",
-    "sql-pyspark-windows",
-    "python-de-cli-snippets"
+    "claude-anthropic-pack",
+    "github-copilot-pack",
+    "grok-xai-pack",
+    "snowflake-cortex-ai"
   ]
 }

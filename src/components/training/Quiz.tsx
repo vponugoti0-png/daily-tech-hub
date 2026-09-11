@@ -25,8 +25,8 @@ export function Quiz({
   if (!questions.length) return null;
 
   return (
-    <section id="quiz" className="glass mt-10 scroll-mt-24 rounded-2xl p-5 sm:p-6">
-      <h2 className="text-lg font-semibold text-white">Check your understanding</h2>
+    <section id="quiz" className="panel mt-10 scroll-mt-24 rounded-2xl p-5 sm:p-6">
+      <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">Check your understanding</h2>
       <p className="mt-1 text-sm text-zinc-400">Answer all questions, then submit for a score.</p>
       <div className="mt-5 space-y-6">
         {questions.map((q, qi) => (
@@ -72,7 +72,7 @@ export function Quiz({
         {!submitted ? (
           <button
             type="button"
-            className="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-300 disabled:opacity-40"
+            className="btn-primary disabled:opacity-40"
             disabled={Object.keys(answers).length < questions.length}
             onClick={() => {
               setSubmitted(true);
@@ -89,7 +89,7 @@ export function Quiz({
             Submit answers
           </button>
         ) : (
-          <p className="text-sm font-medium text-emerald-300">
+          <p className="text-sm font-bold text-[var(--mint)]">
             Score: {score}/{questions.length}
           </p>
         )}

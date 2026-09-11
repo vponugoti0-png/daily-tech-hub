@@ -22,9 +22,9 @@ const items = [
       { label: "Snowflake Docs — Snowsight shortcuts", url: "https://docs.snowflake.com/en/user-guide/ui-snowsight-worksheets" },
     ],
     tips: [
-      { group: "keyboard", title: "Run all", body: "Execute the full worksheet.", code: "Ctrl/Cmd + Enter", source: "Snowsight worksheets" },
-      { group: "keyboard", title: "Run selection / current statement", body: "Run highlighted SQL or the statement under the cursor.", code: "Ctrl/Cmd + Shift + Enter", source: "Snowsight worksheets" },
-      { group: "keyboard", title: "Format SQL", body: "Auto-format the worksheet (where supported).", code: "Ctrl/Cmd + Shift + F", source: "Snowsight worksheets" },
+      { group: "keyboard", title: "Run selected", body: "Run the selected query, or the statement under the cursor.", code: "Mac: Cmd + Return · Windows: Ctrl + Enter", source: "Snowsight worksheets — keyboard shortcuts" },
+      { group: "keyboard", title: "Run all", body: "Execute every statement in the worksheet (Snowsight Worksheets).", code: "Mac: Cmd + Shift + Return · Windows: Ctrl + Alt + Enter", source: "Snowsight worksheets — keyboard shortcuts" },
+      { group: "keyboard", title: "Format query", body: "Format SQL in the worksheet for readability. (Cmd/Ctrl+Shift+F searches schema/results — not format.)", code: "Mac: Cmd + Shift + O · Windows: Ctrl + Shift + O", source: "Snowsight worksheets — keyboard shortcuts" },
       { group: "keyboard", title: "Comment toggle", body: "Comment/uncomment selected lines.", code: "Ctrl/Cmd + /", source: "Snowsight worksheets" },
       { group: "ui", title: "Role & warehouse context", body: "Always set role + warehouse before running; check the context selector in the worksheet header." },
       { group: "ui", title: "Query history", body: "Open Activity → Query History to inspect profiles, spill, and pruning." },
@@ -53,7 +53,20 @@ const items = [
       { group: "sql", title: "QUALIFY latest row", body: "Filter window results without a subquery.", code: "SELECT * FROM events\nQUALIFY ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY ts DESC) = 1;", source: "QUALIFY" },
       { group: "sql", title: "Warehouse auto-suspend", body: "Cost control for ad-hoc warehouses.", code: "ALTER WAREHOUSE adhoc_wh SET AUTO_SUSPEND = 60 AUTO_RESUME = TRUE;", source: "Warehouses" },
       { group: "sql", title: "Create stream", body: "CDC change table on a base table.", code: "CREATE OR REPLACE STREAM raw.orders_stream ON TABLE raw.orders;", source: "Streams" },
-      { group: "sql", title: "Task + MERGE sketch", body: "Scheduled incremental apply.", code: "CREATE OR REPLACE TASK load_orders\n  WAREHOUSE = etl_wh\n  SCHEDULE = 'USING CRON 0 * * * * UTC'\nAS\nMERGE INTO analytics.orders t\nUSING raw.orders_stream s ON t.order_id = s.order_id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *;", source: "Tasks" },
+      { group: "sql", title: "Task + MERGE sketch", body: "Scheduled incremental apply with explicit Snowflake columns (no UPDATE SET */INSERT *).", code: `CREATE OR REPLACE TASK load_orders
+  WAREHOUSE = etl_wh
+  SCHEDULE = 'USING CRON 0 * * * * UTC'
+AS
+MERGE INTO analytics.orders t
+USING raw.orders_stream s
+  ON t.order_id = s.order_id
+WHEN MATCHED AND s.updated_at > t.updated_at THEN UPDATE SET
+  t.customer_id = s.customer_id,
+  t.amount = s.amount,
+  t.status = s.status,
+  t.updated_at = s.updated_at
+WHEN NOT MATCHED THEN INSERT (order_id, customer_id, amount, status, updated_at)
+  VALUES (s.order_id, s.customer_id, s.amount, s.status, s.updated_at);`, source: "Tasks + MERGE" },
       { group: "sql", title: "Dynamic Table", body: "Declarative lag-targeted mart.", code: "CREATE OR REPLACE DYNAMIC TABLE mart.orders_daily\n  TARGET_LAG = '15 minutes'\n  WAREHOUSE = etl_wh\nAS\nSELECT DATE_TRUNC('day', ordered_at) AS d, SUM(amount) AS revenue\nFROM analytics.orders\nGROUP BY 1;", source: "Dynamic Tables" },
       { group: "sql", title: "Query profile hint", body: "After a slow query, open its Query ID in History and check Bytes scanned / Partition pruning / Spilling." },
     ],
@@ -68,7 +81,7 @@ const items = [
     updatedAt: "2026-09-11",
     sources: [
       { label: "Snowflake Cortex AISQL", url: "https://docs.snowflake.com/en/user-guide/snowflake-cortex/aisql" },
-      { label: "Cortex Search", url: "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search" },
+      { label: "Cortex Search", url: "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview" },
     ],
     tips: [
       { group: "ai", title: "COMPLETE (chat-style)", body: "Prompt a Cortex model from SQL.", code: "SELECT SNOWFLAKE.CORTEX.COMPLETE(\n  'llama3.1-70b',\n  'Summarize this incident in 2 bullets: ' || incident_text\n) AS summary\nFROM ops.incidents\nLIMIT 5;", source: "Cortex COMPLETE" },

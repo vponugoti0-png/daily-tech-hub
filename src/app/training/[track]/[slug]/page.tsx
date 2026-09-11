@@ -10,6 +10,9 @@ import { CourseOutline } from "@/components/training/CourseOutline";
 import { Quiz } from "@/components/training/Quiz";
 import { CompleteButton } from "@/components/training/CompleteButton";
 import { CopyButton } from "@/components/CopyButton";
+import { TryItBox } from "@/components/training/TryItBox";
+import { StepCards } from "@/components/training/StepCards";
+import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 
 export function generateStaticParams() {
   return getAllLessons().map((l) => ({ track: l.track, slug: l.slug }));
@@ -38,15 +41,18 @@ export default async function LessonPage({
   const idx = siblings.findIndex((l) => l.slug === lesson.slug);
   const prev = idx > 0 ? siblings[idx - 1] : undefined;
   const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : undefined;
+  const isAiTrack =
+    lesson.track === "prompt-engineering" || lesson.track === "ai-data-eng";
 
   return (
-    <div className="flex gap-8">
+    <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
       <CourseOutline lessons={siblings} currentSlug={lesson.slug} track={lesson.track} />
 
-      <article className="min-w-0 flex-1">
+      <article className="lesson-column min-w-0 flex-1">
+        <FreeForeverBanner compact />
         <Link
           href={`/training/${lesson.track}`}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-violet-300"
+          className="mb-5 mt-3 inline-flex min-h-[40px] items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--coral)]"
         >
           <ArrowLeft className="h-4 w-4" /> Back to {lesson.track}
         </Link>
@@ -54,16 +60,19 @@ export default async function LessonPage({
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <SoftBadge className="capitalize">{lesson.track}</SoftBadge>
           <SoftBadge className="capitalize">{lesson.level}</SoftBadge>
-          <span className="inline-flex items-center gap-1 text-xs text-zinc-500">
+          <span className="inline-flex items-center gap-1 text-xs text-[var(--muted)]">
             <Clock className="h-3.5 w-3.5" /> {lesson.durationMinutes} min
           </span>
-          <span className="text-xs text-zinc-600">Updated {formatDate(lesson.updatedAt)}</span>
+          <span className="text-xs text-[var(--muted)]">Updated {formatDate(lesson.updatedAt)}</span>
         </div>
 
-        <h1 id="learn" className="scroll-mt-24 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <h1
+          id="learn"
+          className="scroll-mt-24 font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl"
+        >
           {lesson.title}
         </h1>
-        <p className="mt-3 text-base text-zinc-400">{lesson.description}</p>
+        <p className="mt-3 text-base text-[var(--muted)]">{lesson.description}</p>
 
         <div className="mt-4 flex flex-wrap gap-1.5">
           {lesson.topics.map((t) => (
@@ -72,14 +81,14 @@ export default async function LessonPage({
         </div>
 
         {lesson.objectives.length ? (
-          <div className="mt-8 rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5">
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-violet-300">
+          <div className="mt-8 rounded-2xl border border-[var(--violet)]/30 bg-[var(--violet)]/10 p-5">
+            <h2 className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-[var(--violet)]">
               <ListChecks className="h-4 w-4" /> Objectives
             </h2>
-            <ul className="space-y-2 text-sm text-zinc-300">
+            <ul className="space-y-2 text-sm text-[var(--ink-fg)]">
               {lesson.objectives.map((o) => (
                 <li key={o} className="flex gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--coral)]" />
                   {o}
                 </li>
               ))}
@@ -87,26 +96,45 @@ export default async function LessonPage({
           </div>
         ) : null}
 
+        {isAiTrack ? (
+          <StepCards
+            steps={[
+              { title: "Learn", body: "Read the short lesson — keep it bite-sized." },
+              { title: "Try it", body: "Copy the prompt/example and run it in your AI tool." },
+              { title: "Quiz", body: "Check understanding, then mark the checkpoint." },
+            ]}
+          />
+        ) : null}
+
         {lesson.cheatSheet?.length ? (
-          <div className="glass mt-8 rounded-2xl p-5">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-cyan-300">
+          <div className="panel mt-8 rounded-2xl p-5">
+            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[var(--sky)]">
               Cheat sheet
             </h2>
             <ul className="mt-3 space-y-3">
               {lesson.cheatSheet.map((e) => (
-                <li key={e.label} className="rounded-xl border border-white/10 bg-black/20 p-3">
+                <li key={e.label} className="rounded-xl border border-[var(--ink-border)] bg-[var(--canvas)]/50 p-3">
                   <div className="mb-1 flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-white">{e.label}</p>
+                    <p className="text-sm font-medium text-[var(--ink-fg)]">{e.label}</p>
                     <CopyButton text={e.code} />
                   </div>
-                  <pre className="overflow-x-auto font-mono text-xs text-cyan-50/90">
+                  <pre className="overflow-x-auto font-mono text-xs text-[var(--ink-fg)]">
                     <code>{e.code}</code>
                   </pre>
-                  {e.note ? <p className="mt-1 text-xs text-zinc-500">{e.note}</p> : null}
+                  {e.note ? <p className="mt-1 text-xs text-[var(--muted)]">{e.note}</p> : null}
                 </li>
               ))}
             </ul>
           </div>
+        ) : null}
+
+        {isAiTrack && lesson.cheatSheet?.[0]?.code ? (
+          <TryItBox
+            title="Try this prompt"
+            code={lesson.cheatSheet[0].code.replace(/\\n/g, "\n")}
+            dialect="AI chat"
+            hint="Paste into Claude, Copilot Chat, or Grok — then iterate."
+          />
         ) : null}
 
         <div className="mt-10">
@@ -119,16 +147,26 @@ export default async function LessonPage({
           <Quiz questions={lesson.quiz} track={lesson.track} slug={lesson.slug} />
         ) : null}
 
-        <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-white/10 pt-6">
+        <div className="mt-10 space-y-3 border-t border-[var(--ink-border)] pt-6">
           <CompleteButton track={lesson.track} slug={lesson.slug} />
-          <p className="text-xs text-zinc-500">Progress is saved in localStorage on this device.</p>
+          <p className="text-xs text-[var(--muted)]">
+            Progress saves locally; signed-in users sync to the free SQLite store.
+          </p>
+          {next ? (
+            <Link
+              href={`/training/${next.track}/${next.slug}`}
+              className="inline-flex min-h-[44px] items-center rounded-[14px] border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-4 py-2 text-sm font-bold text-[var(--ink-fg)] hover:bg-[var(--coral)]/20"
+            >
+              Next checkpoint: {next.title} →
+            </Link>
+          ) : null}
         </div>
 
         <nav className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-between">
           {prev ? (
             <Link
               href={`/training/${prev.track}/${prev.slug}`}
-              className="text-sm text-zinc-400 hover:text-white"
+              className="text-sm text-[var(--muted)] hover:text-[var(--ink-fg)]"
             >
               ← {prev.title}
             </Link>
@@ -138,7 +176,7 @@ export default async function LessonPage({
           {next ? (
             <Link
               href={`/training/${next.track}/${next.slug}`}
-              className="text-sm text-zinc-400 hover:text-white sm:text-right"
+              className="text-sm text-[var(--muted)] hover:text-[var(--ink-fg)] sm:text-right"
             >
               {next.title} →
             </Link>

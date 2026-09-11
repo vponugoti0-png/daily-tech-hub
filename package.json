@@ -1,6 +1,6 @@
 {
   "name": "daily-tech-hub",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,15 +10,20 @@
     "refresh:daily": "node scripts/refresh-daily.mjs",
     "refresh-daily": "node scripts/refresh-daily.mjs",
     "generate:courses": "node scripts/generate-courses.mjs",
-    "generate:shortcuts": "node scripts/generate-shortcuts.mjs"
+    "generate:shortcuts": "node scripts/generate-shortcuts.mjs",
+    "seed:demo": "node -e \"require('./src/lib/db.ts')\" 2>/dev/null || node scripts/seed-demo.mjs",
+    "generate:v3": "node scripts/generate-v3-content.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.10.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "framer-motion": "^13.2.0",
     "gray-matter": "^4.0.3",
+    "jose": "^6.2.12",
     "lucide-react": "^1.45.0",
     "next": "16.3.4",
     "react": "19.2.8",
@@ -30,6 +35,8 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",

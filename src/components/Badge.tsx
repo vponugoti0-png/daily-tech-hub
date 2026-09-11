@@ -25,7 +25,7 @@ export function SoftBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full bg-white/5 px-2 py-0.5 text-[11px] font-medium text-zinc-300 ring-1 ring-inset ring-white/10",
+        "inline-flex items-center rounded-full bg-[var(--panel-2)] px-2 py-0.5 text-[11px] font-medium text-[var(--ink-fg)] ring-1 ring-inset ring-[var(--ink-border)]",
         className,
       )}
     >

@@ -17,13 +17,13 @@ export function SectionHeader({
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {eyebrow ? (
-          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-400/90">
+          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--sky)]">
             {eyebrow}
           </p>
         ) : null}
-        <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{title}</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--ink-fg)] sm:text-3xl">{title}</h2>
         {description ? (
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">{description}</p>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">{description}</p>
         ) : null}
       </div>
       {href ? (

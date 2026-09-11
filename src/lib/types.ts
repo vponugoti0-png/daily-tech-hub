@@ -7,7 +7,14 @@ export type Topic =
   | "git"
   | "general";
 
-export type TrackId = "python" | "sql" | "databricks" | "snowflake" | "git";
+export type TrackId =
+  | "python"
+  | "sql"
+  | "databricks"
+  | "snowflake"
+  | "git"
+  | "prompt-engineering"
+  | "ai-data-eng";
 
 export type ContentKind = "news" | "training" | "release" | "shortcut";
 
@@ -134,4 +141,5 @@ export interface TrackMeta {
   accent: string;
   difficulty: string;
   estimatedHours: number;
+  badge?: string;
 }

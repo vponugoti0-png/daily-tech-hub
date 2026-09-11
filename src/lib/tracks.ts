@@ -2,11 +2,31 @@ import type { TrackId, TrackMeta } from "./types";
 
 export const TRACKS: TrackMeta[] = [
   {
+    id: "prompt-engineering",
+    title: "Prompt Engineering",
+    blurb:
+      "Ask better questions, structure prompts, iterate, verify, and stay safe — beginner-friendly AI skills.",
+    accent: "from-[#9B5CFF] to-[#FF6B4A]",
+    difficulty: "Beginner",
+    estimatedHours: 2.5,
+    badge: "New · Free",
+  },
+  {
+    id: "ai-data-eng",
+    title: "AI for Data Engineers",
+    blurb:
+      "Use AI as a DE copilot: debug, generate SQL/Python safely, docs/tests, and review AI-assisted changes.",
+    accent: "from-[#FF6B4A] to-[#FFD166]",
+    difficulty: "Beginner → Intermediate",
+    estimatedHours: 2.5,
+    badge: "New · Free",
+  },
+  {
     id: "python",
     title: "Python for Data Engineers",
     blurb:
       "ETL utilities, typing, testing, orchestration patterns, and PySpark-ready transforms.",
-    accent: "from-yellow-400 to-amber-600",
+    accent: "from-[#FFD166] to-[#FF6B4A]",
     difficulty: "Beginner → Advanced",
     estimatedHours: 6,
   },
@@ -15,7 +35,7 @@ export const TRACKS: TrackMeta[] = [
     title: "SQL for Analytics Engineering",
     blurb:
       "Windows, incrementals, performance, modeling, and warehouse-ready patterns.",
-    accent: "from-emerald-400 to-teal-600",
+    accent: "from-[#2EE59D] to-[#4CC9F0]",
     difficulty: "Beginner → Advanced",
     estimatedHours: 5.5,
   },
@@ -24,7 +44,7 @@ export const TRACKS: TrackMeta[] = [
     title: "Databricks (DBX)",
     blurb:
       "Lakehouse fundamentals, Delta Lake, Unity Catalog, jobs, and Spark SQL at scale.",
-    accent: "from-orange-400 to-red-600",
+    accent: "from-[#FF6B4A] to-[#9B5CFF]",
     difficulty: "Intermediate → Advanced",
     estimatedHours: 6.5,
   },
@@ -33,7 +53,7 @@ export const TRACKS: TrackMeta[] = [
     title: "Snowflake",
     blurb:
       "Warehouses, Time Travel, Dynamic Tables, Streams & Tasks, governance, and cost control.",
-    accent: "from-sky-400 to-blue-600",
+    accent: "from-[#4CC9F0] to-[#9B5CFF]",
     difficulty: "Beginner → Advanced",
     estimatedHours: 6,
   },
@@ -41,7 +61,7 @@ export const TRACKS: TrackMeta[] = [
     id: "git",
     title: "Git (bonus)",
     blurb: "Rebase, hygiene, and bisect workflows for analytics repos.",
-    accent: "from-violet-400 to-purple-600",
+    accent: "from-[#A9A3C2] to-[#5C5675]",
     difficulty: "Intermediate",
     estimatedHours: 1.5,
   },
@@ -53,10 +73,14 @@ export function getTrackMeta(id: string): TrackMeta | undefined {
   return TRACKS.find((t) => t.id === id);
 }
 
-export const TRACK_IDS: TrackId[] = [
+export const TRACK_IDS: TrackId[] = TRACKS.map((t) => t.id);
+
+export const CERT_PATH: TrackId[] = [
+  "prompt-engineering",
+  "ai-data-eng",
   "python",
   "sql",
-  "databricks",
   "snowflake",
+  "databricks",
   "git",
 ];

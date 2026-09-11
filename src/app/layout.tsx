@@ -1,19 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Space_Grotesk, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import { getDigest } from "@/lib/content";
 import { formatDateTime } from "@/lib/dates";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const display = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const body = Source_Sans_3({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const mono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s · Daily Tech Hub",
   },
   description:
-    "Premium daily tech hub for data engineers — interactive courses, shortcuts (CLI/SQL/keyboard/AI), news, and releases for Snowflake, Databricks, Python, and SQL.",
+    "100% free forever daily tech hub for data engineers — prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, and Claude/Copilot/Grok shortcuts.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -30,15 +39,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(localStorage.getItem('dth-theme')==='light')document.documentElement.classList.add('light')}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">
-        <Header />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
-          {children}
-        </main>
-        <Footer lastUpdated={formatDateTime(digest.lastUpdated)} />
+        <AuthProvider>
+          <Header />
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
+            {children}
+          </main>
+          <Footer lastUpdated={formatDateTime(digest.lastUpdated)} />
+        </AuthProvider>
       </body>
     </html>
   );

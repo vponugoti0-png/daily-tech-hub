@@ -2,83 +2,125 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { formatDate, formatDateTime, relativeTime } from "@/lib/dates";
 import type { DigestMeta } from "@/lib/types";
-import { ArrowRight, BookOpen, CalendarDays, Keyboard, Newspaper, RefreshCw } from "lucide-react";
+import { BookOpen, CalendarDays, Keyboard, RefreshCw, Sparkles } from "lucide-react";
+import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 
 const HeroScene = dynamic(
   () => import("@/components/three/HeroScene").then((m) => m.HeroScene),
-  { ssr: false, loading: () => <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-indigo-500/10" /> },
+  {
+    ssr: false,
+    loading: () => <div className="absolute inset-0" aria-hidden />,
+  },
 );
 
 export function Hero({ digest }: { digest: DigestMeta }) {
-  return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0c1524]/90 via-[#0a1220]/95 to-[#111827] p-6 sm:p-10">
-      <HeroScene />
-      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-cyan-500/15 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 left-10 h-56 w-56 rounded-full bg-indigo-600/15 blur-3xl" />
+  const reduceMotion = useReducedMotion();
+  const [allow3d, setAllow3d] = useState(false);
 
-      <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () =>
+      setAllow3d(
+        mq.matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+      );
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const fade = (delay = 0) =>
+    reduceMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 10 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.35, delay },
+        };
+
+  return (
+    <section className="relative overflow-hidden rounded-[1.5rem] border border-[var(--ink-border)] bg-[var(--panel)] p-6 sm:p-9">
+      {allow3d ? (
+        <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden>
+          <HeroScene />
+        </div>
+      ) : null}
+      {/* Playful illustration blobs */}
+      <div className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[var(--violet)]/25 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute bottom-0 left-1/3 h-36 w-36 rounded-full bg-[var(--coral)]/20 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -left-8 top-1/2 h-28 w-28 rounded-full bg-[var(--sky)]/20 blur-2xl" aria-hidden />
+      <div className="pointer-events-none absolute right-1/4 top-6 h-16 w-16 rotate-12 rounded-2xl bg-[var(--sun)]/30" aria-hidden />
+
+      <div className="relative grid gap-6 lg:grid-cols-[1.4fr_0.8fr] lg:items-center">
         <div>
-          <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-zinc-400">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 font-medium text-cyan-300 ring-1 ring-cyan-500/30">
-              <span className="live-dot h-1.5 w-1.5 rounded-full bg-cyan-300" />
-              <CalendarDays className="h-3.5 w-3.5" />
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--coral)]/15 px-3 py-1 font-bold text-[var(--coral)] ring-1 ring-[var(--coral)]/30">
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--coral)]" />
+              <CalendarDays className="h-3.5 w-3.5" aria-hidden />
               Today · {formatDate(digest.date)}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <RefreshCw className="h-3.5 w-3.5" />
-              Updated {relativeTime(digest.lastUpdated)}
-              <span className="hidden text-zinc-600 sm:inline">({formatDateTime(digest.lastUpdated)})</span>
+              <RefreshCw className="h-3.5 w-3.5" aria-hidden />
+              {relativeTime(digest.lastUpdated)}
+              <span className="hidden sm:inline">· {formatDateTime(digest.lastUpdated)}</span>
             </span>
+            <FreeForeverBanner compact />
           </div>
           <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl"
+            {...fade(0)}
+            className="max-w-3xl font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"
           >
             {digest.headline}
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-400 sm:text-lg"
+            {...fade(0.05)}
+            className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--muted)] sm:text-lg"
           >
             {digest.blurb}
           </motion.p>
+          <motion.div {...fade(0.08)} className="mt-6 flex flex-wrap gap-3">
+            <Link href="/training" className="btn-primary">
+              <BookOpen className="h-4 w-4" aria-hidden />
+              Start free training
+            </Link>
+            <Link href="/shortcuts" className="btn-ghost">
+              <Keyboard className="h-4 w-4" aria-hidden />
+              Shortcuts
+            </Link>
+          </motion.div>
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
+          {...fade(0.1)}
           className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1"
         >
-          {[
-            { href: "/training", label: "Start a course", icon: BookOpen, desc: "Python · SQL · DBX · Snowflake" },
-            { href: "/shortcuts", label: "Open shortcuts", icon: Keyboard, desc: "CLI · SQL · Keyboard · AI" },
-            { href: "/news", label: "Skim today’s news", icon: Newspaper, desc: "Why-it-matters digests" },
-            { href: "/search", label: "Search the hub", icon: ArrowRight, desc: "Cross-content find" },
-          ].map((a) => (
-            <Link
-              key={a.href}
-              href={a.href}
-              className="glass glass-hover group flex items-center gap-3 rounded-2xl px-4 py-3"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-300">
-                <a.icon className="h-4.5 w-4.5 h-4 w-4" />
-              </span>
-              <span>
-                <span className="block text-sm font-semibold text-white group-hover:text-cyan-100">
-                  {a.label}
-                </span>
-                <span className="text-xs text-zinc-500">{a.desc}</span>
-              </span>
-            </Link>
-          ))}
+          <Link
+            href="/training/prompt-engineering"
+            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)] p-4 transition hover:border-[var(--coral)]/40"
+          >
+            <p className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--sun)]">
+              <Sparkles className="h-3 w-3" /> Next action
+            </p>
+            <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
+              Prompt Engineering 101
+            </p>
+            <p className="mt-1 text-xs text-[var(--muted)]">6 bite-sized lessons · free cert path</p>
+          </Link>
+          <Link
+            href="/dashboard"
+            className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)] p-4 transition hover:border-[var(--mint)]/40"
+          >
+            <p className="font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--mint)]">
+              XP path
+            </p>
+            <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
+              Track your progress
+            </p>
+            <p className="mt-1 text-xs text-[var(--muted)]">Sign in free · sync lessons & quizzes</p>
+          </Link>
         </motion.div>
       </div>
     </section>

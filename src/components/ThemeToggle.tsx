@@ -24,10 +24,10 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="rounded-lg border border-white/10 bg-white/5 p-2 text-zinc-300 transition hover:border-white/20 hover:text-white"
+      className="rounded-lg border border-[var(--ink-border)] bg-[var(--panel)] p-2 text-[var(--ink-fg)] transition hover:bg-[var(--panel-2)]"
       aria-label={light ? "Switch to dark mode" : "Switch to light mode"}
     >
-      {light ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+      {light ? <Moon className="h-4 w-4" aria-hidden /> : <Sun className="h-4 w-4" aria-hidden />}
     </button>
   );
 }

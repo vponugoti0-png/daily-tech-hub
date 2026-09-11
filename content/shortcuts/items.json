@@ -19,23 +19,23 @@
       {
         "group": "keyboard",
         "title": "Run all",
-        "body": "Execute the full worksheet.",
-        "code": "Ctrl/Cmd + Enter",
-        "source": "Snowsight worksheets"
+        "body": "Execute every statement in the worksheet (Snowsight Worksheets).",
+        "code": "Mac: Cmd + Shift + Return · Windows: Ctrl + Alt + Enter",
+        "source": "Snowsight worksheets — keyboard shortcuts"
       },
       {
         "group": "keyboard",
-        "title": "Run selection / current statement",
-        "body": "Run highlighted SQL or the statement under the cursor.",
-        "code": "Ctrl/Cmd + Shift + Enter",
-        "source": "Snowsight worksheets"
+        "title": "Run selected",
+        "body": "Run the selected query, or the statement under the cursor.",
+        "code": "Mac: Cmd + Return · Windows: Ctrl + Enter",
+        "source": "Snowsight worksheets — keyboard shortcuts"
       },
       {
         "group": "keyboard",
-        "title": "Format SQL",
-        "body": "Auto-format the worksheet (where supported).",
-        "code": "Ctrl/Cmd + Shift + F",
-        "source": "Snowsight worksheets"
+        "title": "Format query",
+        "body": "Format SQL in the worksheet for readability. (Cmd/Ctrl+Shift+F searches schema/results — not format.)",
+        "code": "Mac: Cmd + Shift + O · Windows: Ctrl + Shift + O",
+        "source": "Snowsight worksheets — keyboard shortcuts"
       },
       {
         "group": "keyboard",
@@ -149,9 +149,9 @@
       {
         "group": "sql",
         "title": "Task + MERGE sketch",
-        "body": "Scheduled incremental apply.",
-        "code": "CREATE OR REPLACE TASK load_orders\n  WAREHOUSE = etl_wh\n  SCHEDULE = 'USING CRON 0 * * * * UTC'\nAS\nMERGE INTO analytics.orders t\nUSING raw.orders_stream s ON t.order_id = s.order_id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *;",
-        "source": "Tasks"
+        "body": "Scheduled incremental apply with explicit Snowflake columns (no UPDATE SET */INSERT *).",
+        "code": "CREATE OR REPLACE TASK load_orders\n  WAREHOUSE = etl_wh\n  SCHEDULE = 'USING CRON 0 * * * * UTC'\nAS\nMERGE INTO analytics.orders t\nUSING raw.orders_stream s\n  ON t.order_id = s.order_id\nWHEN MATCHED AND s.updated_at > t.updated_at THEN UPDATE SET\n  t.customer_id = s.customer_id,\n  t.amount = s.amount,\n  t.status = s.status,\n  t.updated_at = s.updated_at\nWHEN NOT MATCHED THEN INSERT (order_id, customer_id, amount, status, updated_at)\n  VALUES (s.order_id, s.customer_id, s.amount, s.status, s.updated_at);",
+        "source": "Tasks + MERGE"
       },
       {
         "group": "sql",
@@ -185,7 +185,7 @@
       },
       {
         "label": "Cortex Search",
-        "url": "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search"
+        "url": "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview"
       }
     ],
     "tips": [
@@ -913,6 +913,268 @@
         "group": "ai",
         "title": "AI + cloud CLI",
         "body": "Ask AI to draft least-privilege IAM/policy JSON — review with security before apply."
+      }
+    ]
+  },
+  {
+    "slug": "claude-anthropic-pack",
+    "title": "Claude (Anthropic) — prompts & features",
+    "tool": "claude",
+    "category": "AI · Claude",
+    "summary": "Official-style tips for Claude chat: projects, artifacts mindset, strong prompt patterns, and privacy habits for DE learners.",
+    "topics": [
+      "general"
+    ],
+    "updatedAt": "2026-09-11",
+    "sources": [
+      {
+        "label": "Anthropic Claude",
+        "url": "https://claude.ai"
+      },
+      {
+        "label": "Anthropic docs",
+        "url": "https://docs.anthropic.com"
+      }
+    ],
+    "tips": [
+      {
+        "group": "ai",
+        "title": "Clear role + task",
+        "body": "Start with who Claude should be and what done looks like.",
+        "code": "You are a patient data-engineering tutor.\\nTask: explain Delta MERGE vs COPY for beginners.\\nOutput: 6 bullets + 1 tiny SQL example (Spark SQL)."
+      },
+      {
+        "group": "ai",
+        "title": "Ask for assumptions",
+        "body": "Force hidden guesses into the open.",
+        "code": "List assumptions before answering. If dialect is unclear, ask."
+      },
+      {
+        "group": "ai",
+        "title": "Structured rewrite",
+        "body": "Turn messy notes into a ticket-ready brief.",
+        "code": "Rewrite my notes into: Problem / Impact / Next checks / Risks. Keep under 120 words."
+      },
+      {
+        "group": "ai",
+        "title": "Critique my attempt",
+        "body": "Learning mode — paste your work, not just ‘give answer’.",
+        "code": "Here is my SQL attempt (sanitized). Point out bugs, then show a corrected version with comments."
+      },
+      {
+        "group": "ai",
+        "title": "Long-doc navigation",
+        "body": "When pasting long docs, ask for a map first.",
+        "code": "Skim and outline sections relevant to Unity Catalog grants. Then deep-dive section 2 only."
+      },
+      {
+        "group": "keyboard",
+        "title": "Chat UX habits",
+        "body": "Use new threads per incident; keep one thread for a single lesson. Prefer copy-out of final snippets into your repo — not chat as source of truth."
+      },
+      {
+        "group": "ai",
+        "title": "Artifacts / canvases mindset",
+        "body": "Ask Claude to keep a living draft (checklist, SQL file, study plan) you iteratively edit in-thread.",
+        "code": "Maintain a living study checklist for Prompt Engineering lesson 1–6. Update it each turn; show only the checklist."
+      },
+      {
+        "group": "ai",
+        "title": "Privacy",
+        "body": "No secrets/PII. Use synthetic rows. Follow employer policy for Anthropic products."
+      },
+      {
+        "group": "ai",
+        "title": "DE example — pipeline design",
+        "body": "Architecture brainstorm with constraints.",
+        "code": "Design a beginner-friendly daily incremental load for orders (Snowflake). Constraints: explicit MERGE columns, watermark table, no PII in examples. Output: steps + SQL sketches."
+      },
+      {
+        "group": "ai",
+        "title": "Verify loop",
+        "body": "End prompts with verification asks.",
+        "code": "End with 3 checks I should run in Snowsight before trusting this."
+      }
+    ]
+  },
+  {
+    "slug": "github-copilot-pack",
+    "title": "GitHub Copilot — editor shortcuts & prompts",
+    "tool": "copilot",
+    "category": "AI · Copilot",
+    "summary": "Keyboard shortcuts, inline completions, chat/CLI-oriented prompts, and safe use for Python/SQL DE work.",
+    "topics": [
+      "general",
+      "python",
+      "git"
+    ],
+    "updatedAt": "2026-09-11",
+    "sources": [
+      {
+        "label": "GitHub Copilot docs",
+        "url": "https://docs.github.com/en/copilot"
+      },
+      {
+        "label": "Copilot keyboard shortcuts (VS Code)",
+        "url": "https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-your-ide"
+      }
+    ],
+    "tips": [
+      {
+        "group": "keyboard",
+        "title": "Accept suggestion",
+        "body": "Accept the current inline completion (VS Code).",
+        "code": "Tab",
+        "source": "VS Code Copilot"
+      },
+      {
+        "group": "keyboard",
+        "title": "Dismiss suggestion",
+        "body": "Dismiss the inline ghost text.",
+        "code": "Esc",
+        "source": "VS Code Copilot"
+      },
+      {
+        "group": "keyboard",
+        "title": "Open Copilot Chat (VS Code)",
+        "body": "Open chat panel — binding can vary by install; check Keyboard Shortcuts for ‘chat’ / Copilot.",
+        "code": "Ctrl/Cmd + Shift + I  (or Command Palette: “Chat: Open”)",
+        "source": "VS Code / Copilot docs"
+      },
+      {
+        "group": "keyboard",
+        "title": "Trigger inline suggest",
+        "body": "Manually request an inline suggestion.",
+        "code": "Alt/Option + \\   ·  or Command Palette: “GitHub Copilot: Trigger Inline Suggestion”",
+        "source": "VS Code Copilot"
+      },
+      {
+        "group": "keyboard",
+        "title": "Next / previous suggestion",
+        "body": "Cycle alternate inline completions when available.",
+        "code": "Alt/Option + ]  /  Alt/Option + [",
+        "source": "VS Code Copilot"
+      },
+      {
+        "group": "ai",
+        "title": "Comment-driven codegen",
+        "body": "Write intent as a comment above empty code.",
+        "code": "# Return a pandas DataFrame with columns id, ts normalized to UTC; drop null ids\\ndef normalize_events(df):\\n    ..."
+      },
+      {
+        "group": "ai",
+        "title": "Copilot Chat — explain",
+        "body": "Select code → ask for a beginner explanation.",
+        "code": "Explain this function like I’m new to Spark. List side effects."
+      },
+      {
+        "group": "ai",
+        "title": "Copilot Chat — tests",
+        "body": "Generate focused tests.",
+        "code": "/tests Focus on null keys and duplicate event_id. Use pytest."
+      },
+      {
+        "group": "ai",
+        "title": "SQL cell / file context",
+        "body": "State dialect in a header comment so completions match.",
+        "code": "-- dialect: snowflake\\n-- task: explicit-column MERGE into analytics.customers"
+      },
+      {
+        "group": "cli",
+        "title": "Copilot CLI / PR help (where enabled)",
+        "body": "Use Copilot-assisted PR summaries only on sanitized diffs; never paste secrets into prompts.",
+        "code": "gh copilot --help  # if GitHub Copilot CLI is installed"
+      },
+      {
+        "group": "ai",
+        "title": "Safety",
+        "body": "Review every suggestion. Disable Copilot on secret-heavy files. Prefer public/synthetic examples in chat."
+      },
+      {
+        "group": "ai",
+        "title": "DE workflow tip",
+        "body": "Let Copilot draft boilerplate; you own join keys, partition columns, and idempotent writes."
+      }
+    ]
+  },
+  {
+    "slug": "grok-xai-pack",
+    "title": "Grok (xAI) — prompts & features",
+    "tool": "grok",
+    "category": "AI · Grok",
+    "summary": "Practical Grok prompting for fast DE learning: clarity, iteration, verification, and example workflows.",
+    "topics": [
+      "general"
+    ],
+    "updatedAt": "2026-09-11",
+    "sources": [
+      {
+        "label": "xAI Grok",
+        "url": "https://grok.x.ai"
+      },
+      {
+        "label": "xAI",
+        "url": "https://x.ai"
+      }
+    ],
+    "tips": [
+      {
+        "group": "ai",
+        "title": "Direct brief",
+        "body": "Grok responds well to crisp briefs — lead with the ask.",
+        "code": "In 8 bullets: difference between lakehouse and warehouse for a new DE. End with one analogy."
+      },
+      {
+        "group": "ai",
+        "title": "Compare tools",
+        "body": "Ask for decision tables.",
+        "code": "Compare Claude vs Copilot vs Grok for: tutoring, inline coding, quick Q&A. Table with columns: best for / watch-outs."
+      },
+      {
+        "group": "ai",
+        "title": "Drill mode",
+        "body": "Practice interviews / concepts.",
+        "code": "Quiz me on Snowflake Time Travel. 5 questions, one at a time. Wait for my answer."
+      },
+      {
+        "group": "ai",
+        "title": "Simplify jargon",
+        "body": "Progressive depth.",
+        "code": "Explain Photon like I’m 15, then again for a working DE, then list 3 myths."
+      },
+      {
+        "group": "ai",
+        "title": "Debug sketch",
+        "body": "Symptom package without secrets.",
+        "code": "Symptom: Databricks job doubles row counts on retry.\\nAsk: ranked causes + checks. No cluster IDs or tokens."
+      },
+      {
+        "group": "ai",
+        "title": "Prompt remodel",
+        "body": "Have Grok improve your prompt.",
+        "code": "Improve this prompt for clarity and verifiability: '''...''' Return only the improved prompt."
+      },
+      {
+        "group": "ai",
+        "title": "Learning plan",
+        "body": "Build a free study sprint.",
+        "code": "Make a 5-day beginner plan using Daily Tech Hub tracks: prompt-engineering + sql. 45 min/day. Checklist format."
+      },
+      {
+        "group": "ui",
+        "title": "Thread hygiene",
+        "body": "One topic per thread when possible; copy final answers into your notes. Treat chat as ephemeral."
+      },
+      {
+        "group": "ai",
+        "title": "Verification ask",
+        "body": "Always close the loop.",
+        "code": "What are 3 ways this could be wrong? How would I falsify each quickly?"
+      },
+      {
+        "group": "ai",
+        "title": "Privacy",
+        "body": "Same rules everywhere: no credentials, no customer data, prefer synthetic examples."
       }
     ]
   }
