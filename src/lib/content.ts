@@ -106,7 +106,21 @@ export function getLessonsByTrack(track: string): TrainingLesson[] {
 }
 
 export function getLesson(track: string, slug: string): TrainingLesson | undefined {
-  return getAllLessons().find((l) => l.track === track && l.slug === slug);
+  const exact = getAllLessons().find((l) => l.track === track && l.slug === slug);
+  if (exact) return exact;
+  // Accept legacy filename-stem URLs (e.g. 01-dataframe-contracts) by matching the markdown file.
+  const dir = path.join(CONTENT_ROOT, "training", track);
+  if (!fs.existsSync(dir)) return undefined;
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".md"))) {
+    const stem = file.replace(/\.md$/, "");
+    const stemNoPrefix = stem.replace(/^\d+-/, "");
+    if (slug !== stem && slug !== stemNoPrefix) continue;
+    const raw = fs.readFileSync(path.join(dir, file), "utf8");
+    const { data } = matter(raw);
+    const realSlug = String(data.slug);
+    return getAllLessons().find((l) => l.track === track && l.slug === realSlug);
+  }
+  return undefined;
 }
 
 export function getFeaturedBundle() {

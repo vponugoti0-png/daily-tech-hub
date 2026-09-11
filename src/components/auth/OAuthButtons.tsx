@@ -30,9 +30,25 @@ export function OAuthButtons({
     setHint("");
     setBusy(id);
     try {
-      await signIn(id, { callbackUrl });
+      const result = await signIn(id, { callbackUrl, redirect: false });
+      if (!result) {
+        setHint("Could not start social sign-in. Refresh and try again, or use email.");
+        setBusy(null);
+        return;
+      }
+      if (result.error) {
+        setHint(`OAuth error: ${result.error}. Try email sign-in, or refresh the page.`);
+        setBusy(null);
+        return;
+      }
+      if (result.url) {
+        window.location.assign(result.url);
+        return;
+      }
+      setHint("Social sign-in did not return a redirect. Try email instead.");
+      setBusy(null);
     } catch {
-      setHint("Could not start Google sign-in. Try email instead, or refresh the page.");
+      setHint("Could not start social sign-in. Try email instead, or refresh the page.");
       setBusy(null);
     }
   }

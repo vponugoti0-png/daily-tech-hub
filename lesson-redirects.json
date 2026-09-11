@@ -1,0 +1,437 @@
+[
+  {
+    "source": "/training/ai-data-eng/review-ai-changes",
+    "destination": "/training/ai-data-eng/ai-de-review-changes",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/06-review-ai-changes",
+    "destination": "/training/ai-data-eng/ai-de-review-changes",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/docs-tests-with-ai",
+    "destination": "/training/ai-data-eng/ai-de-docs-and-tests",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/04-docs-tests-with-ai",
+    "destination": "/training/ai-data-eng/ai-de-docs-and-tests",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/03-generate-sql-python-safely",
+    "destination": "/training/ai-data-eng/ai-de-generate-code-safely",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/generate-sql-python-safely",
+    "destination": "/training/ai-data-eng/ai-de-generate-code-safely",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/ai-as-de-copilot",
+    "destination": "/training/ai-data-eng/ai-de-copilot-mindset",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/01-ai-as-de-copilot",
+    "destination": "/training/ai-data-eng/ai-de-copilot-mindset",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/debug-with-ai",
+    "destination": "/training/ai-data-eng/ai-de-debug-with-ai",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/02-debug-with-ai",
+    "destination": "/training/ai-data-eng/ai-de-debug-with-ai",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/05-ai-tools-for-de-workflow",
+    "destination": "/training/ai-data-eng/ai-de-tools-workflow",
+    "permanent": true
+  },
+  {
+    "source": "/training/ai-data-eng/ai-tools-for-de-workflow",
+    "destination": "/training/ai-data-eng/ai-de-tools-workflow",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/structure-prompts",
+    "destination": "/training/prompt-engineering/pe-structure-prompts",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/02-structure-prompts",
+    "destination": "/training/prompt-engineering/pe-structure-prompts",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/03-iterate-and-refine",
+    "destination": "/training/prompt-engineering/pe-iterate-and-refine",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/iterate-and-refine",
+    "destination": "/training/prompt-engineering/pe-iterate-and-refine",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/01-ask-better-questions",
+    "destination": "/training/prompt-engineering/pe-ask-better-questions",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/ask-better-questions",
+    "destination": "/training/prompt-engineering/pe-ask-better-questions",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/06-prompts-for-learning",
+    "destination": "/training/prompt-engineering/pe-prompts-for-learning",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/prompts-for-learning",
+    "destination": "/training/prompt-engineering/pe-prompts-for-learning",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/safety-privacy-basics",
+    "destination": "/training/prompt-engineering/pe-safety-privacy",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/05-safety-privacy-basics",
+    "destination": "/training/prompt-engineering/pe-safety-privacy",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/04-verify-answers",
+    "destination": "/training/prompt-engineering/pe-verify-answers",
+    "permanent": true
+  },
+  {
+    "source": "/training/prompt-engineering/verify-answers",
+    "destination": "/training/prompt-engineering/pe-verify-answers",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/config-and-secrets",
+    "destination": "/training/python/python-config-and-secrets",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/05-config-and-secrets",
+    "destination": "/training/python/python-config-and-secrets",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/06-orchestration-hooks",
+    "destination": "/training/python/python-orchestration-hooks",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/orchestration-hooks",
+    "destination": "/training/python/python-orchestration-hooks",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/04-idempotent-writers",
+    "destination": "/training/python/python-idempotent-writers",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/idempotent-writers",
+    "destination": "/training/python/python-idempotent-writers",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/03-testing-spark-logic",
+    "destination": "/training/python/python-testing-spark-logic",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/testing-spark-logic",
+    "destination": "/training/python/python-testing-spark-logic",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/typing-for-pipelines",
+    "destination": "/training/python/python-typing-for-pipelines",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/02-typing-for-pipelines",
+    "destination": "/training/python/python-typing-for-pipelines",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/07-performance-python-de",
+    "destination": "/training/python/python-performance-de",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/performance-python-de",
+    "destination": "/training/python/python-performance-de",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/dataframe-contracts",
+    "destination": "/training/python/python-dataframe-contracts",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/01-dataframe-contracts",
+    "destination": "/training/python/python-dataframe-contracts",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/packaging-de-libs",
+    "destination": "/training/python/python-packaging-de-libs",
+    "permanent": true
+  },
+  {
+    "source": "/training/python/08-packaging-de-libs",
+    "destination": "/training/python/python-packaging-de-libs",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/rebase-vs-merge",
+    "destination": "/training/git/git-rebase-vs-merge",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/01-rebase-vs-merge",
+    "destination": "/training/git/git-rebase-vs-merge",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/03-bisect-and-blame",
+    "destination": "/training/git/git-bisect-and-blame",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/bisect-and-blame",
+    "destination": "/training/git/git-bisect-and-blame",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/commit-hygiene",
+    "destination": "/training/git/git-commit-hygiene",
+    "permanent": true
+  },
+  {
+    "source": "/training/git/02-commit-hygiene",
+    "destination": "/training/git/git-commit-hygiene",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/07-dbx-sql-warehouses",
+    "destination": "/training/databricks/dbx-sql-warehouses",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/05-jobs-and-workflows",
+    "destination": "/training/databricks/dbx-jobs-workflows",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/jobs-and-workflows",
+    "destination": "/training/databricks/dbx-jobs-workflows",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/lakehouse-fundamentals",
+    "destination": "/training/databricks/dbx-lakehouse-fundamentals",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/01-lakehouse-fundamentals",
+    "destination": "/training/databricks/dbx-lakehouse-fundamentals",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/03-spark-sql-performance",
+    "destination": "/training/databricks/dbx-spark-sql-performance",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/spark-sql-performance",
+    "destination": "/training/databricks/dbx-spark-sql-performance",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/delta-lake-basics",
+    "destination": "/training/databricks/dbx-delta-lake-basics",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/02-delta-lake-basics",
+    "destination": "/training/databricks/dbx-delta-lake-basics",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/06-structured-streaming",
+    "destination": "/training/databricks/dbx-structured-streaming",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/structured-streaming",
+    "destination": "/training/databricks/dbx-structured-streaming",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/unity-catalog-governance",
+    "destination": "/training/databricks/dbx-unity-catalog",
+    "permanent": true
+  },
+  {
+    "source": "/training/databricks/04-unity-catalog-governance",
+    "destination": "/training/databricks/dbx-unity-catalog",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/05-data-quality-sql",
+    "destination": "/training/sql/sql-data-quality",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/data-quality-sql",
+    "destination": "/training/sql/sql-data-quality",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/02-incremental-loads",
+    "destination": "/training/sql/sql-incremental-loads",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/incremental-loads",
+    "destination": "/training/sql/sql-incremental-loads",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/semi-structured-sql",
+    "destination": "/training/sql/sql-semi-structured",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/07-semi-structured-sql",
+    "destination": "/training/sql/sql-semi-structured",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/dimensional-modeling",
+    "destination": "/training/sql/sql-dimensional-modeling",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/04-dimensional-modeling",
+    "destination": "/training/sql/sql-dimensional-modeling",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/06-ctes-and-readability",
+    "destination": "/training/sql/sql-ctes-readability",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/ctes-and-readability",
+    "destination": "/training/sql/sql-ctes-readability",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/03-performance-basics",
+    "destination": "/training/sql/sql-performance-basics",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/performance-basics",
+    "destination": "/training/sql/sql-performance-basics",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/window-functions-de",
+    "destination": "/training/sql/sql-window-functions-de",
+    "permanent": true
+  },
+  {
+    "source": "/training/sql/01-window-functions-de",
+    "destination": "/training/sql/sql-window-functions-de",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/04-dynamic-tables",
+    "destination": "/training/snowflake/sf-dynamic-tables",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/dynamic-tables",
+    "destination": "/training/snowflake/sf-dynamic-tables",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/05-performance-cost",
+    "destination": "/training/snowflake/sf-performance-cost",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/performance-cost",
+    "destination": "/training/snowflake/sf-performance-cost",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/governance-rbac",
+    "destination": "/training/snowflake/sf-governance-rbac",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/06-governance-rbac",
+    "destination": "/training/snowflake/sf-governance-rbac",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/01-snowflake-architecture",
+    "destination": "/training/snowflake/sf-architecture",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/snowflake-architecture",
+    "destination": "/training/snowflake/sf-architecture",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/streams-and-tasks",
+    "destination": "/training/snowflake/sf-streams-tasks",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/03-streams-and-tasks",
+    "destination": "/training/snowflake/sf-streams-tasks",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/07-snowpark-python",
+    "destination": "/training/snowflake/sf-snowpark-python",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/snowpark-python",
+    "destination": "/training/snowflake/sf-snowpark-python",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/time-travel-clones",
+    "destination": "/training/snowflake/sf-time-travel-clones",
+    "permanent": true
+  },
+  {
+    "source": "/training/snowflake/02-time-travel-clones",
+    "destination": "/training/snowflake/sf-time-travel-clones",
+    "permanent": true
+  }
+]

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import lessonRedirects from "./lesson-redirects.json";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
@@ -11,6 +12,7 @@ const nextConfig: NextConfig = {
         destination: "/training/prompt-engineering/pe-ask-better-questions",
         permanent: true,
       },
+      ...lessonRedirects,
     ];
   },
 };
