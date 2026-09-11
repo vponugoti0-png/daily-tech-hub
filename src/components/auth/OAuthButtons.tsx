@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import type { OAuthProviderId } from "@/lib/auth/oauth-providers";
 
@@ -18,9 +18,32 @@ export function OAuthButtons({
   /** Server-provided list — avoids “Checking social login…” flash */
   initialConfigured?: OAuthProviderId[];
 }) {
-  const configured = initialConfigured;
+  const [configured, setConfigured] = useState<OAuthProviderId[]>(initialConfigured);
   const [busy, setBusy] = useState<OAuthProviderId | null>(null);
   const [hint, setHint] = useState("");
+
+  useEffect(() => {
+    if (initialConfigured.length > 0) {
+      setConfigured(initialConfigured);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/oauth-configured", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { configured?: OAuthProviderId[] };
+        if (!cancelled && Array.isArray(data.configured)) {
+          setConfigured(data.configured);
+        }
+      } catch {
+        /* keep empty — email login still works */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [initialConfigured]);
 
   if (configured.length === 0) {
     return null;
@@ -68,7 +91,7 @@ export function OAuthButtons({
             className="btn-ghost flex w-full items-center justify-center gap-2 disabled:opacity-50"
           >
             <OAuthIcon id={id} />
-            {busy === id ? "Opening Google…" : LABELS[id]}
+            {busy === id ? "Opening…" : LABELS[id]}
           </button>
         ))}
       </div>
