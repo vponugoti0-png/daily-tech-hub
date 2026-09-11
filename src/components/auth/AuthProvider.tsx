@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { mergeServerProgress, pushLocalProgressToServer } from "@/lib/progress";
@@ -30,10 +31,13 @@ const Ctx = createContext<AuthCtx>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const epoch = useRef(0);
 
   const refresh = useCallback(async () => {
+    const myEpoch = ++epoch.current;
+    setLoading(true);
     try {
-      const res = await fetch("/api/auth/me");
+      const res = await fetch("/api/auth/me", { credentials: "same-origin" });
       const data = (await res.json()) as {
         user: AuthUser | null;
         progress?: Array<{
@@ -46,9 +50,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           updatedAt: string;
         }>;
       };
+      if (myEpoch !== epoch.current) return;
       setUser(data.user);
       if (data.user) {
         await pushLocalProgressToServer();
+        if (myEpoch !== epoch.current) return;
         if (data.progress?.length) {
           const map = Object.fromEntries(
             data.progress.map((p) => [
@@ -67,19 +73,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         window.dispatchEvent(new Event("dth-progress"));
       }
     } catch {
+      if (myEpoch !== epoch.current) return;
       setUser(null);
     } finally {
-      setLoading(false);
+      if (myEpoch === epoch.current) setLoading(false);
     }
   }, []);
 
   const logout = useCallback(async () => {
+    // Invalidate any in-flight refresh so it cannot resurrect the session UI.
+    epoch.current += 1;
+    setUser(null);
+    setLoading(false);
     try {
       await authedFetch("/api/auth/logout", { method: "POST" });
     } catch {
-      /* still clear client state */
+      /* client already cleared */
     }
-    setUser(null);
   }, []);
 
   useEffect(() => {

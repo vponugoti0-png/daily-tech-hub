@@ -29,7 +29,6 @@ export function Header() {
     setOpen(false);
     await logout();
     router.push("/login");
-    router.refresh();
   }
 
   return (
@@ -88,7 +87,7 @@ export function Header() {
             <Search className="h-4 w-4" aria-hidden />
             <span className="hidden md:inline">Search</span>
           </Link>
-          {!loading && user ? (
+          {user ? (
             <div className="hidden items-center gap-1.5 sm:flex">
               <Link
                 href="/dashboard"
@@ -105,7 +104,7 @@ export function Header() {
                 Sign out
               </button>
             </div>
-          ) : !loading ? (
+          ) : (
             <Link
               href="/login"
               className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] bg-[var(--coral)] px-3.5 py-2 text-sm font-bold text-[#1a1430] shadow-[0_3px_0_color-mix(in_oklab,var(--coral)_55%,#000)] sm:px-4"
@@ -113,7 +112,7 @@ export function Header() {
               <UserRound className="h-4 w-4" aria-hidden />
               Sign in
             </Link>
-          ) : null}
+          )}
           <button
             type="button"
             className="rounded-lg p-2.5 text-[var(--muted)] hover:bg-[var(--panel-2)] lg:hidden"
