@@ -27,7 +27,7 @@ export function Quiz({
   return (
     <section id="quiz" className="panel mt-10 scroll-mt-24 rounded-2xl p-5 sm:p-6">
       <h2 className="font-display text-lg font-bold text-[var(--ink-fg)]">Check your understanding</h2>
-      <p className="mt-1 text-sm text-zinc-400">Answer all questions, then submit for a score.</p>
+      <p className="mt-1 text-sm text-zinc-400">Pick an answer for each question.</p>
       <div className="mt-5 space-y-6">
         {questions.map((q, qi) => (
           <fieldset key={qi} className="space-y-2">
