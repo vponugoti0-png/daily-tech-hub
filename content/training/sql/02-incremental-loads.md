@@ -7,6 +7,7 @@ level: intermediate
 order: 2
 durationMinutes: 40
 topics: [sql, snowflake, databricks]
+dialect: mixed
 objectives:
   - "Track watermarks safely"
   - "Handle late-arriving facts"
@@ -24,12 +25,28 @@ quiz:
 
 # Incremental loads & watermarks
 
+> **Dialects in this lesson:** Spark SQL / Databricks (`UPDATE SET *`) and a Snowflake-style explicit column list. Do not mix syntax across engines.
+
 ```sql
+-- Dialect: Spark SQL / Databricks
 MERGE INTO mart.orders t
 USING staging.orders_delta s
 ON t.order_id = s.order_id
 WHEN MATCHED AND s.updated_at > t.updated_at THEN UPDATE SET *
 WHEN NOT MATCHED THEN INSERT *;
+```
+
+```sql
+-- Dialect: Snowflake
+MERGE INTO mart.orders t
+USING staging.orders_delta s
+ON t.order_id = s.order_id
+WHEN MATCHED AND s.updated_at > t.updated_at THEN UPDATE SET
+  t.status = s.status,
+  t.amount = s.amount,
+  t.updated_at = s.updated_at
+WHEN NOT MATCHED THEN INSERT (order_id, status, amount, updated_at)
+  VALUES (s.order_id, s.status, s.amount, s.updated_at);
 ```
 
 Store `pipeline_state(job, watermark_ts)`. On failure, do not advance.

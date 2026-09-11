@@ -29,12 +29,20 @@ Clusters are slow feedback. Extract rules you can test in milliseconds.
 ## Pattern
 
 ```python
+from pyspark.sql import functions as F
+
 def is_late(event_ts, watermark_ts) -> bool:
     return event_ts < watermark_ts
 
-# Spark wrapper stays thin
-def filter_late(df, watermark_col="watermark"):
-    return df.filter(~F.col("event_ts") < F.col(watermark_col))  # prefer UDF-free expr
+# Spark wrapper stays thin — keep rows that are NOT late
+def filter_not_late(df, watermark_col="watermark"):
+    # Operator precedence: unary ~ binds tighter than <, so
+    #   ~F.col("event_ts") < F.col(watermark_col)
+    # is parsed as (~col) < watermark — wrong and not a boolean NOT of the comparison.
+    # Negate the whole predicate, or prefer >= for "not late":
+    return df.filter(~(F.col("event_ts") < F.col(watermark_col)))
+    # equivalent / clearer:
+    # return df.filter(F.col("event_ts") >= F.col(watermark_col))
 ```
 
 Prefer column expressions over Python UDFs for performance — test the **policy**, implement with Catalyst.

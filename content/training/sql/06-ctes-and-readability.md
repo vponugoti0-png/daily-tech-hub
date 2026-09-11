@@ -7,6 +7,7 @@ level: beginner
 order: 6
 durationMinutes: 25
 topics: [sql]
+dialect: ANSI
 objectives:
   - "Name CTEs by business meaning"
   - "Avoid nested spaghetti subqueries"
@@ -24,7 +25,10 @@ quiz:
 
 # CTEs, readability, and modular SQL
 
+> **Dialect:** ANSI SQL.
+
 ```sql
+-- Dialect: ANSI
 WITH eligible_orders AS (
   SELECT * FROM orders WHERE status = 'paid'
 ),

@@ -7,6 +7,7 @@ level: intermediate
 order: 3
 durationMinutes: 35
 topics: [sql, snowflake, databricks]
+dialect: ANSI
 objectives:
   - "Filter early and select only needed columns"
   - "Understand pruning vs full scans"
@@ -29,9 +30,17 @@ quiz:
 
 # SQL performance basics for warehouses
 
+> **Dialect:** ANSI / warehouse-agnostic concepts (pruning behavior is similar on Snowflake clustering keys and Spark/Databricks partitions).
+
 - Filter on partition/cluster keys **without wrapping** in functions when possible.
 - Project fewer columns — wide rows hurt spill.
 - Check query profile: spill, shuffle bytes, pruning %.
+
+```sql
+-- Dialect: ANSI (range-friendly predicate; prefer this over wrapping the column)
+WHERE ts >= CURRENT_DATE
+  AND ts <  CURRENT_DATE + INTERVAL '1' DAY
+```
 
 ## Exercises
 

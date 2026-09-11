@@ -11,7 +11,23 @@ objectives:
   - Run git bisect with a test command
   - Use blame to understand a line's origin
   - Combine with dbt/pytest smoke tests
-updatedAt: "2026-09-04"
+updatedAt: "2026-09-11"
+quiz:
+  - question: "What does git bisect run pytest … do?"
+    options:
+      - "Rewrites all commit messages"
+      - "Binary-searches commits, marking each good/bad from the test exit code"
+      - "Only blames the latest author"
+      - "Deletes failing tests"
+    answer: 1
+    explanation: "Bisect automates the binary search using your smoke test as the oracle."
+  - question: "When is git blame often misleading?"
+    options:
+      - "Never"
+      - "After bulk reformats or renames that touch every line"
+      - "Only on merge commits"
+      - "Only in bare repositories"
+    answer: 1
 ---
 
 # Bisect & blame for broken pipelines

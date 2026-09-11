@@ -12,6 +12,22 @@ objectives:
   - Avoid rebasing shared history
   - Resolve conflicts with intent
 updatedAt: "2026-09-11"
+quiz:
+  - question: "When is rebasing onto main usually appropriate?"
+    options:
+      - "On a shared long-lived release branch many people push to"
+      - "On your personal feature branch before opening a PR"
+      - "After the PR is already merged to main"
+      - "Only when force-pushing to main"
+    answer: 1
+    explanation: "Rebase personal branches for a linear review; never rewrite shared history."
+  - question: "Why avoid git pull --rebase on a shared release branch?"
+    options:
+      - "It is slower than merge"
+      - "It rewrites commits others may already have, causing painful force-push conflicts"
+      - "It deletes remote tags"
+      - "It disables CI"
+    answer: 1
 ---
 
 # Rebase vs merge for analytics repos

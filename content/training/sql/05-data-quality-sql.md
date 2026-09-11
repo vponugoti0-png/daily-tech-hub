@@ -7,6 +7,7 @@ level: beginner
 order: 5
 durationMinutes: 30
 topics: [sql, general]
+dialect: mixed
 objectives:
   - "Encode DQ tests as SQL"
   - "Fail pipelines on critical assertions"
@@ -24,12 +25,28 @@ quiz:
 
 # Data quality checks in SQL
 
-```sql
--- duplicates
-SELECT order_id, COUNT(*) c FROM fct_orders GROUP BY 1 HAVING COUNT(*) > 1;
+> **Dialects in this lesson:** duplicate check is ANSI; freshness uses Snowflake `DATEADD` and a Spark SQL equivalent.
 
--- freshness
-SELECT MAX(updated_at) < DATEADD(hour, -6, CURRENT_TIMESTAMP) AS stale FROM fct_orders;
+```sql
+-- Dialect: ANSI
+-- duplicates
+SELECT order_id, COUNT(*) AS c
+FROM fct_orders
+GROUP BY 1
+HAVING COUNT(*) > 1;
+```
+
+```sql
+-- Dialect: Snowflake
+-- freshness (stale if max updated_at older than 6 hours)
+SELECT MAX(updated_at) < DATEADD(hour, -6, CURRENT_TIMESTAMP()) AS stale
+FROM fct_orders;
+```
+
+```sql
+-- Dialect: Spark SQL
+SELECT MAX(updated_at) < CURRENT_TIMESTAMP() - INTERVAL 6 HOURS AS stale
+FROM fct_orders;
 ```
 
 ## Exercises

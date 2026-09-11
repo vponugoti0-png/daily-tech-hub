@@ -11,7 +11,23 @@ objectives:
   - Write actionable commit messages
   - Use fixup/autosquash before review
   - Keep secrets out of history
-updatedAt: "2026-09-07"
+updatedAt: "2026-09-11"
+quiz:
+  - question: "Which commit message best fits a dbt incremental change?"
+    options:
+      - "update stuff"
+      - "feat(marts): rebuild late-arriving orders for last 2 days"
+      - "asdf"
+      - "WIP"
+    answer: 1
+    explanation: "Say what changed and why so warehouse audits and reviews stay clear."
+  - question: "You accidentally staged a .env with credentials. First safe step?"
+    options:
+      - "Push then fix later"
+      - "Leave it; gitignore will hide it from history"
+      - "git rm --cached the file, add to .gitignore, and rotate the credentials"
+      - "Amend after force-pushing to main"
+    answer: 2
 ---
 
 # Commit hygiene for data PRs

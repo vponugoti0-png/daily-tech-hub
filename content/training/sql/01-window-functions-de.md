@@ -7,6 +7,7 @@ level: beginner
 order: 1
 durationMinutes: 35
 topics: [sql]
+dialect: ANSI
 objectives:
   - "Use PARTITION BY / ORDER BY correctly"
   - "Build SCD-friendly change detection with LAG"
@@ -29,7 +30,10 @@ quiz:
 
 # Window functions for data engineers
 
+> **Dialect:** ANSI SQL (portable across Snowflake, Spark SQL, and most warehouses).
+
 ```sql
+-- Dialect: ANSI
 SELECT *
 FROM (
   SELECT *,
@@ -42,6 +46,7 @@ WHERE rn = 1;
 ## Change detection
 
 ```sql
+-- Dialect: ANSI
 LAG(status) OVER (PARTITION BY account_id ORDER BY updated_at) AS prev_status
 ```
 
