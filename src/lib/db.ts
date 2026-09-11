@@ -92,6 +92,7 @@ function migrate(db: Database.Database) {
 }
 
 function seedIfEmpty(db: Database.Database) {
+  if (process.env.NODE_ENV === "production") return;
   const row = db.prepare("SELECT COUNT(*) AS c FROM users").get() as { c: number };
   if (row.c > 0) return;
 

@@ -1,11 +1,9 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { getAuthSecret } from "@/lib/auth/secret";
 
 const COOKIE = "dth_session";
-const secret = () =>
-  new TextEncoder().encode(
-    process.env.AUTH_SECRET || "daily-tech-hub-v3-dev-secret-change-me",
-  );
+const secret = () => new TextEncoder().encode(getAuthSecret());
 
 export type SessionUser = {
   id: number;

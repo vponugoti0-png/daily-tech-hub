@@ -5,6 +5,7 @@ import Twitter from "next-auth/providers/twitter";
 import type { Provider } from "next-auth/providers";
 import { upsertOAuthUser } from "@/lib/auth/users";
 import { configuredOAuthProviders } from "@/lib/auth/oauth-providers";
+import { getAuthSecret } from "@/lib/auth/secret";
 
 function buildProviders(): Provider[] {
   const providers: Provider[] = [];
@@ -67,8 +68,7 @@ declare module "@auth/core/jwt" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  // Dev fallback only — rotate AUTH_SECRET in production (invalidates all sessions).
-  secret: process.env.AUTH_SECRET || "daily-tech-hub-v3-dev-secret-change-me",
+  secret: getAuthSecret(),
   trustHost: true,
   providers: buildProviders(),
   // Shorter OAuth session; re-auth via provider when expired.
