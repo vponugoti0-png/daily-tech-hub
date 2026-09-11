@@ -74,9 +74,11 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
           <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--ink-border)]" />
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
-          <label className="block text-sm">
+          <label htmlFor="login-email" className="block text-sm">
             <span className="mb-1.5 block text-[var(--muted)]">Email</span>
             <input
+              id="login-email"
+              name="email"
               type="email"
               required
               value={email}
@@ -85,9 +87,11 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
               autoComplete="email"
             />
           </label>
-          <label className="block text-sm">
+          <label htmlFor="login-password" className="block text-sm">
             <span className="mb-1.5 block text-[var(--muted)]">Password</span>
             <input
+              id="login-password"
+              name="password"
               type="password"
               required
               value={password}
@@ -96,7 +100,11 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
               autoComplete="current-password"
             />
           </label>
-          {error ? <p className="text-sm text-[var(--punch)]">{error}</p> : null}
+          {error ? (
+            <p role="alert" className="text-sm font-medium text-rose-600 dark:text-rose-400">
+              {error}
+            </p>
+          ) : null}
           <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-50">
             {busy ? "Signing in…" : "Sign in"}
           </button>

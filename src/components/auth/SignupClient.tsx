@@ -69,9 +69,11 @@ export function SignupClient({ oauthConfigured = [] }: { oauthConfigured?: impor
           <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--ink-border)]" />
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
-          <label className="block text-sm">
+          <label htmlFor="signup-name" className="block text-sm">
             <span className="mb-1.5 block text-[var(--muted)]">Name</span>
             <input
+              id="signup-name"
+              name="name"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -79,9 +81,11 @@ export function SignupClient({ oauthConfigured = [] }: { oauthConfigured?: impor
               autoComplete="name"
             />
           </label>
-          <label className="block text-sm">
+          <label htmlFor="signup-email" className="block text-sm">
             <span className="mb-1.5 block text-[var(--muted)]">Email</span>
             <input
+              id="signup-email"
+              name="email"
               type="email"
               required
               value={email}
@@ -90,9 +94,11 @@ export function SignupClient({ oauthConfigured = [] }: { oauthConfigured?: impor
               autoComplete="email"
             />
           </label>
-          <label className="block text-sm">
+          <label htmlFor="signup-password" className="block text-sm">
             <span className="mb-1.5 block text-[var(--muted)]">Password (min 8)</span>
             <input
+              id="signup-password"
+              name="password"
               type="password"
               required
               minLength={8}
@@ -102,7 +108,22 @@ export function SignupClient({ oauthConfigured = [] }: { oauthConfigured?: impor
               autoComplete="new-password"
             />
           </label>
-          {error ? <p className="text-sm text-[var(--punch)]">{error}</p> : null}
+          {error ? (
+            <p role="alert" className="text-sm font-medium text-rose-600 dark:text-rose-400">
+              {error}
+            </p>
+          ) : null}
+          <p className="text-xs text-[var(--muted)]">
+            By signing up you agree to the{" "}
+            <a href="/terms" className="text-[var(--signal)] underline-offset-2 hover:underline">
+              Terms
+            </a>{" "}
+            and{" "}
+            <a href="/privacy" className="text-[var(--signal)] underline-offset-2 hover:underline">
+              Privacy Policy
+            </a>
+            .
+          </p>
           <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-50">
             {busy ? "Creating…" : "Sign up free"}
           </button>

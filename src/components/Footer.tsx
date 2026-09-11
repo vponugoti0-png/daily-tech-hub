@@ -32,6 +32,15 @@ export function Footer({ lastUpdated }: { lastUpdated?: string }) {
               Training
             </Link>
           </p>
+          <p>
+            <Link href="/privacy" className="hover:text-[var(--signal)]">
+              Privacy
+            </Link>
+            {" · "}
+            <Link href="/terms" className="hover:text-[var(--signal)]">
+              Terms
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

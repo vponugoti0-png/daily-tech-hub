@@ -70,24 +70,32 @@ export function Quiz({
       </div>
       <div className="mt-6 flex flex-wrap items-center gap-3">
         {!submitted ? (
-          <button
-            type="button"
-            className="btn-primary disabled:opacity-40"
-            disabled={Object.keys(answers).length < questions.length}
-            onClick={() => {
-              setSubmitted(true);
-              const s = questions.reduce(
-                (acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0),
-                0,
-              );
-              upsertLessonProgress(track, slug, {
-                quizScore: s,
-                quizTotal: questions.length,
-              });
-            }}
-          >
-            Submit answers
-          </button>
+          <>
+            <button
+              type="button"
+              className="btn-primary disabled:opacity-40"
+              disabled={Object.keys(answers).length < questions.length}
+              onClick={() => {
+                setSubmitted(true);
+                const s = questions.reduce(
+                  (acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0),
+                  0,
+                );
+                upsertLessonProgress(track, slug, {
+                  quizScore: s,
+                  quizTotal: questions.length,
+                });
+              }}
+            >
+              Submit answers
+            </button>
+            {Object.keys(answers).length < questions.length ? (
+              <p className="text-sm text-[var(--muted)]">
+                Answer all questions to enable submit ({Object.keys(answers).length}/
+                {questions.length}).
+              </p>
+            ) : null}
+          </>
         ) : (
           <p className="text-sm font-bold text-[var(--mint)]">
             Score: {score}/{questions.length}
