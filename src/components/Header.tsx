@@ -7,7 +7,6 @@ import { Menu, Search, X, Hexagon, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 import { PlainEnglishToggle } from "@/components/PlainEnglishToggle";
 
 const NAV = [
@@ -16,7 +15,7 @@ const NAV = [
   { href: "/shortcuts", label: "Shortcuts" },
   { href: "/news", label: "News" },
   { href: "/releases", label: "Releases" },
-  { href: "/dashboard", label: "My progress" },
+  { href: "/dashboard", label: "Progress" },
 ];
 
 export function Header() {
@@ -44,9 +43,9 @@ export function Header() {
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[var(--coral)] text-[#1a1430] shadow-[0_0_24px_var(--glow)]">
             <Hexagon className="h-4 w-4" aria-hidden />
           </span>
-          <span className="hidden truncate sm:inline">Daily Tech Hub</span>
-          <span className="hidden rounded-md bg-[var(--violet)] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white sm:inline">
-            Aurora
+          <span className="truncate text-sm sm:text-base">Aurora</span>
+          <span className="hidden truncate text-xs font-semibold text-[var(--muted)] lg:inline">
+            Daily Tech Hub
           </span>
         </Link>
 
@@ -75,10 +74,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <span className="hidden xl:inline">
-            <FreeForeverBanner compact />
-          </span>
-          <span className="hidden sm:inline">
+          <span className="hidden md:inline">
             <PlainEnglishToggle compact />
           </span>
           <ThemeToggle />
@@ -88,7 +84,6 @@ export function Header() {
             aria-label="Search"
           >
             <Search className="h-4 w-4" aria-hidden />
-            <span className="hidden md:inline">Search</span>
           </Link>
           {showAccount ? (
             <div className="hidden items-center gap-1.5 sm:flex">
@@ -97,7 +92,7 @@ export function Header() {
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-[14px] border border-[var(--mint)]/40 bg-[var(--mint)]/15 px-3 py-2 text-sm font-bold text-[var(--mint)]"
               >
                 <UserRound className="h-4 w-4" aria-hidden />
-                <span className="max-w-[7rem] truncate">{account && account.name && !/^demo\s*oauth$/i.test(account.name) ? account.name : account?.email && !account.email.endsWith("@oauth.local") ? account.email.split("@")[0] : "You"}</span>
+                <span className="max-w-[5.5rem] truncate">{account && account.name && !/^demo\s*oauth$/i.test(account.name) ? account.name : account?.email && !account.email.endsWith("@oauth.local") ? account.email.split("@")[0] : "You"}</span>
               </Link>
               <button
                 type="button"

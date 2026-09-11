@@ -56,7 +56,7 @@ function LoginForm({ oauthConfigured }: { oauthConfigured: import("@/lib/auth/oa
     <div className="mx-auto max-w-md space-y-6">
       <div>
         <p className="font-display text-xs font-bold uppercase tracking-[0.2em] text-[var(--signal)]">
-          Free forever
+          Welcome back
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)]">
           Sign in

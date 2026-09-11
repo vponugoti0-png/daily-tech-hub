@@ -18,9 +18,39 @@ export interface ProgressState {
   lessons: Record<string, LessonProgress>;
 }
 
-function lessonKey(track: TrackId | string, slug: string) {
-  return `${track}:${slug}`;
+/** Legacy progress keys from old lesson URL/slug experiments. */
+const SLUG_ALIASES: Record<string, string> = {
+  "ask-better-questions": "pe-ask-better-questions",
+  "01-ask-better-questions": "pe-ask-better-questions",
+};
+
+function canonicalSlug(slug: string): string {
+  return SLUG_ALIASES[slug] ?? slug;
 }
+
+function lessonKey(track: TrackId | string, slug: string) {
+  return `${track}:${canonicalSlug(slug)}`;
+}
+
+function normalizeProgressKeys(state: ProgressState): ProgressState {
+  const lessons: ProgressState["lessons"] = {};
+  for (const [key, value] of Object.entries(state.lessons)) {
+    const idx = key.indexOf(":");
+    if (idx < 0) {
+      lessons[key] = value;
+      continue;
+    }
+    const track = key.slice(0, idx);
+    const slug = key.slice(idx + 1);
+    const nextKey = lessonKey(track, slug);
+    const prev = lessons[nextKey];
+    if (!prev || (value.updatedAt || "") >= (prev.updatedAt || "")) {
+      lessons[nextKey] = value;
+    }
+  }
+  return { lessons };
+}
+
 
 function migrateLegacy(): ProgressState | null {
   try {
@@ -40,9 +70,9 @@ export function loadProgress(): ProgressState {
     const raw = localStorage.getItem(KEY);
     if (!raw) {
       const legacy = migrateLegacy();
-      return legacy ?? { lessons: {} };
+      return normalizeProgressKeys(legacy ?? { lessons: {} });
     }
-    return JSON.parse(raw) as ProgressState;
+    return normalizeProgressKeys(JSON.parse(raw) as ProgressState);
   } catch {
     return { lessons: {} };
   }

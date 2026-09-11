@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllLessons, getLessonsByTrack } from "@/lib/content";
 import { SectionHeader } from "@/components/SectionHeader";
-import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 import { TRACKS } from "@/lib/tracks";
 import { TrainingFilters } from "@/components/training/TrainingFilters";
 
@@ -21,9 +20,7 @@ export default function TrainingPage() {
         title="Interactive course tracks"
         description="Bite-sized lessons with try-it shells, quizzes, and cert-style checkpoints. No paywalls."
       />
-      <FreeForeverBanner />
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {TRACKS.map((track) => {
           const trackLessons = getLessonsByTrack(track.id);
           const mins = trackLessons.reduce((a, l) => a + l.durationMinutes, 0);

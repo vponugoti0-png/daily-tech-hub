@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 import { CERT_PATH, TRACKS } from "@/lib/tracks";
 import { loadProgress, trackCompletion } from "@/lib/progress";
 
@@ -127,8 +126,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <FreeForeverBanner />
-
         <div className="panel flex flex-col gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-display text-lg font-bold text-[var(--ink-fg)]">
@@ -218,8 +215,6 @@ export default function DashboardPage() {
           plans.
         </p>
       </div>
-
-      <FreeForeverBanner />
 
       <p className="text-sm text-[var(--ink-fg)]">
         Signed in as <strong>{user.name}</strong> ({user.email}) — progress syncs to your free

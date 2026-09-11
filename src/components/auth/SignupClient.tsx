@@ -48,7 +48,7 @@ export function SignupClient({ oauthConfigured = [] }: { oauthConfigured?: impor
     <div className="mx-auto max-w-md space-y-6">
       <div>
         <p className="font-display text-xs font-bold uppercase tracking-[0.2em] text-[var(--signal)]">
-          100% free forever
+          Free account
         </p>
         <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)]">
           Create account

@@ -11,7 +11,7 @@ export function Footer({ lastUpdated }: { lastUpdated?: string }) {
               Aurora Play Lab
             </span>
           </p>
-          <p className="mt-1">100% free forever · playful learning for data + AI</p>
+          <p className="mt-1">Free learning for data engineers + AI</p>
         </div>
         <div className="flex flex-col gap-1 sm:items-end">
           {lastUpdated ? <p>Digest updated {lastUpdated}</p> : null}

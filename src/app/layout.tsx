@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s · Daily Tech Hub",
   },
   description:
-    "100% free forever daily tech hub for data engineers — prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, and Claude/Copilot/Grok shortcuts.",
+    "Aurora — Daily Tech Hub for data engineers: prompt engineering, AI for DE, Snowflake, Databricks, Python, SQL, and Claude/Copilot/Grok shortcuts.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

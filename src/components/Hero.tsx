@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { formatDate, formatDateTime, relativeTime } from "@/lib/dates";
 import type { DigestMeta } from "@/lib/types";
 import { BookOpen, CalendarDays, Keyboard, RefreshCw, Sparkles } from "lucide-react";
-import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 
 const HeroScene = dynamic(
   () => import("@/components/three/HeroScene").then((m) => m.HeroScene),
@@ -71,8 +70,7 @@ export function Hero({ digest }: { digest: DigestMeta }) {
               {relativeTime(digest.lastUpdated)}
               <span className="hidden sm:inline">· {formatDateTime(digest.lastUpdated)}</span>
             </span>
-            <FreeForeverBanner compact />
-          </div>
+</div>
           <motion.h1
             {...fade(0)}
             className="max-w-3xl font-display text-3xl font-bold tracking-tight text-[var(--ink-fg)] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]"

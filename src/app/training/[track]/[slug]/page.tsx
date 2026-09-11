@@ -12,7 +12,6 @@ import { CompleteButton } from "@/components/training/CompleteButton";
 import { CopyButton } from "@/components/CopyButton";
 import { TryItBox } from "@/components/training/TryItBox";
 import { StepCards } from "@/components/training/StepCards";
-import { FreeForeverBanner } from "@/components/FreeForeverBanner";
 
 export function generateStaticParams() {
   return getAllLessons().map((l) => ({ track: l.track, slug: l.slug }));
@@ -49,8 +48,7 @@ export default async function LessonPage({
       <CourseOutline lessons={siblings} currentSlug={lesson.slug} track={lesson.track} />
 
       <article className="lesson-column min-w-0 flex-1">
-        <FreeForeverBanner compact />
-        <Link
+<Link
           href={`/training/${lesson.track}`}
           className="mb-5 mt-3 inline-flex min-h-[40px] items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--coral)]"
         >
