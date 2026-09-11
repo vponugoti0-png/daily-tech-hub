@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Menu, Search, X, Hexagon, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,13 +16,21 @@ const NAV = [
   { href: "/shortcuts", label: "Shortcuts" },
   { href: "/news", label: "News" },
   { href: "/releases", label: "Releases" },
-  { href: "/dashboard", label: "Progress" },
+  { href: "/dashboard", label: "My progress" },
 ];
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const { user, logout, loading } = useAuth();
+
+  async function handleLogout() {
+    setOpen(false);
+    await logout();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--ink-border)] bg-[color-mix(in_oklab,var(--canvas)_88%,transparent)] backdrop-blur-xl">
@@ -91,7 +99,7 @@ export function Header() {
               </Link>
               <button
                 type="button"
-                onClick={() => void logout()}
+                onClick={() => void handleLogout()}
                 className="rounded-lg px-2 py-1.5 text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink-fg)]"
               >
                 Sign out
@@ -135,13 +143,32 @@ export function Header() {
             <div className="px-1 py-2">
               <PlainEnglishToggle />
             </div>
-            <Link
-              href={user ? "/dashboard" : "/signup"}
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--coral)]"
-            >
-              {user ? "Your progress" : "Sign up free"}
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--coral)]"
+                >
+                  My progress
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => void handleLogout()}
+                  className="rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--ink-fg)]"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/signup"
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[var(--coral)]"
+              >
+                Sign up free
+              </Link>
+            )}
           </nav>
         </div>
       ) : null}

@@ -118,12 +118,12 @@ export function Hero({ digest }: { digest: DigestMeta }) {
             className="rounded-2xl border border-[var(--ink-border)] bg-[var(--panel-2)]/90 p-4 backdrop-blur-sm transition hover:border-[var(--mint)]/40"
           >
             <p className="font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--mint)]">
-              Progress path
+              My progress · free
             </p>
             <p className="mt-1 font-display text-base font-bold text-[var(--ink-fg)]">
               Save your wins
             </p>
-            <p className="mt-1 text-xs text-[var(--muted)]">Free sign-in syncs lessons</p>
+            <p className="mt-1 text-xs text-[var(--muted)]">100% free — sign-in only syncs</p>
           </Link>
         </motion.div>
       </div>
