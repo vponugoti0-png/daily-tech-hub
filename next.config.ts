@@ -32,8 +32,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
-  serverExternalPackages: ["better-sqlite3"],
+  serverExternalPackages: ["@libsql/client", "libsql"],
   devIndicators: false,
+  // Ensure markdown/JSON content read via fs at runtime ships with serverless functions on Vercel.
+  outputFileTracingIncludes: { "/**": ["./content/**/*"] },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

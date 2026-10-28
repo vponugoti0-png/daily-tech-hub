@@ -10,8 +10,8 @@ import { assertCsrf } from "@/lib/auth/csrf";
 
 export const runtime = "nodejs";
 
-function lessonsPayload(userId: number) {
-  const progress = getProgressForUser(userId);
+async function lessonsPayload(userId: number) {
+  const progress = await getProgressForUser(userId);
   return {
     lessons: Object.fromEntries(
       progress.map((p) => [
@@ -31,7 +31,7 @@ function lessonsPayload(userId: number) {
 export async function GET() {
   const session = await readSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  return NextResponse.json(lessonsPayload(session.id));
+  return NextResponse.json(await lessonsPayload(session.id));
 }
 
 export async function POST(req: Request) {
@@ -71,13 +71,13 @@ export async function POST(req: Request) {
       );
     }
     try {
-      mergeLocalProgress(session.id, body.merge);
+      await mergeLocalProgress(session.id, body.merge);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Merge failed";
       return NextResponse.json({ error: msg }, { status: 400 });
     }
   } else if (body.track && body.slug) {
-    upsertProgress(session.id, {
+    await upsertProgress(session.id, {
       track: body.track,
       slug: body.slug,
       completed: body.completed,
@@ -89,5 +89,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing progress payload" }, { status: 400 });
   }
 
-  return NextResponse.json(lessonsPayload(session.id));
+  return NextResponse.json(await lessonsPayload(session.id));
 }
