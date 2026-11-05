@@ -101,7 +101,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const subject = account.providerAccountId;
         if (!subject) return false;
 
-        upsertOAuthUser({
+        await upsertOAuthUser({
           provider: account.provider,
           subject,
           email,
@@ -120,7 +120,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.email ||
           (typeof profile?.email === "string" ? profile.email : undefined);
         const subject = account.providerAccountId;
-        const dbUser = upsertOAuthUser({
+        const dbUser = await upsertOAuthUser({
           provider: account.provider,
           subject,
           email,

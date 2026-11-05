@@ -63,11 +63,11 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    if (findUserByEmail(email)) {
+    if (await findUserByEmail(email)) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
     }
 
-    const user = createUser(email, name, password);
+    const user = await createUser(email, name, password);
     await setSessionCookies({
       id: user.id,
       email: user.email,

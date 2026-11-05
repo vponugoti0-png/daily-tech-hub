@@ -27,6 +27,11 @@ function trustedOrigins(): Set<string> {
       /* skip */
     }
   }
+  // Vercel system env vars (deployment + production domain), host only.
+  for (const key of ["VERCEL_URL", "VERCEL_BRANCH_URL", "VERCEL_PROJECT_PRODUCTION_URL"] as const) {
+    const v = process.env[key]?.trim();
+    if (v) out.add(`https://${v.replace(/^https?:\/\//, "")}`);
+  }
   // Dev fallback when nothing configured
   if (out.size === 0 && process.env.NODE_ENV !== "production") {
     out.add("http://localhost:3000");

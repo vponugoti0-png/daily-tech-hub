@@ -11,7 +11,7 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ user: null, csrf });
   }
-  const progress = getProgressForUser(session.id);
+  const progress = await getProgressForUser(session.id);
   return NextResponse.json({
     user: session,
     csrf,
